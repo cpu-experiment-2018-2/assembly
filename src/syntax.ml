@@ -20,4 +20,6 @@ type t =
   | JUMP of string
   | IN of int
   | OUT of int
+  | BLR
+  | END
 [@@deriving show]

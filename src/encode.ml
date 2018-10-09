@@ -20,6 +20,8 @@ let opcode e =
   | OR _ -> "010001"
   | IN _ -> "110000"
   | OUT _ -> "110001"
+  | END  -> "111000"
+  | BLR  -> "100001"
   | CMPD _ -> "101010"
   | CMPDI _ -> failwith "yet implemented"
   | LI _ -> "011010"
@@ -59,14 +61,15 @@ let encode env e =
           | IN a -> a lsl 21
           | OUT a -> a lsl 21
           | Label _ -> failwith "label is unreachble"
+          | BLR _ -> 0
+          | END _ -> 0
           | _ -> failwith "yet implemented" )
       in
       [op ^ t]
 
 let make_env (env, counter) expr =
   match expr with
-  (* alignを考えて４かける *)
-  | Label s -> ((s, 4 * counter) :: env, counter)
+  | Label s -> ((s, counter) :: env, counter)
   | _ -> (env, counter + 1)
 
 let f exp_list =
