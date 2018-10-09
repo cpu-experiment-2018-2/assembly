@@ -22,7 +22,7 @@ let opcode e =
   | OUT _ -> "110001"
   | END -> "111000"
   | BLR -> "100001"
-  | BL _  -> "100010"
+  | BL _ -> "100010"
   | CMPD _ -> "101010"
   | CMPDI _ -> failwith "yet implemented"
   | LI _ -> "011010"
@@ -54,7 +54,8 @@ let encode env e =
            |AND (t, a, b)
            |OR (t, a, b) ->
               (t lsl 21) lor (a lsl 16) lor (b lsl 11)
-          | JUMP label | BEQ label | BLE label |BL label -> List.assoc label env
+          | JUMP label | BEQ label | BLE label | BL label ->
+              List.assoc label env
           | LOAD (t, a, d) | STORE (t, a, d) -> (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
           | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)

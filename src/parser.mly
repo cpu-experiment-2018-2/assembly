@@ -60,9 +60,8 @@ order:
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}
     | BLR { BLR}
-    | BL { BL}
+    | BL IDENT { BL($2)}
     | END { END}
-
     | IN reg { IN($2)}
     | OUT reg { OUT($2)}
     | JUMP IDENT {JUMP($2)}

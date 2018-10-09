@@ -20,7 +20,7 @@ type t =
   | JUMP of string
   | IN of int
   | OUT of int
-  | BLR 
+  | BLR
   | BL of string
   | END
 [@@deriving show]
