@@ -21,5 +21,6 @@ type t =
   | IN of int
   | OUT of int
   | BLR
+  | BL
   | END
 [@@deriving show]

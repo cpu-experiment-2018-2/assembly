@@ -20,8 +20,8 @@ let opcode e =
   | OR _ -> "010001"
   | IN _ -> "110000"
   | OUT _ -> "110001"
-  | END  -> "111000"
-  | BLR  -> "100001"
+  | END -> "111000"
+  | BLR -> "100001"
   | CMPD _ -> "101010"
   | CMPDI _ -> failwith "yet implemented"
   | LI _ -> "011010"
@@ -44,8 +44,7 @@ let encode env e =
       let t =
         binary_encode 26
           ( match e with
-          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d)
-            ->
+          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d) ->
               (t lsl 21) lor (s lsl 16) lor d
           | ADD (t, a, b)
            |SUB (t, a, b)

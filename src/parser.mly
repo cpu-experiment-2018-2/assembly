@@ -21,6 +21,7 @@ exception ParseError
 %token LOAD
 %token CMPDI
 %token CMPD
+%token BL
 %token BEQ
 %token BLE
 %token BLR
@@ -59,6 +60,7 @@ order:
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}
     | BLR { BLR}
+    | BL { BL}
     | END { END}
 
     | IN reg { IN($2)}

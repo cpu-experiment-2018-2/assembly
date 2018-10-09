@@ -49,6 +49,7 @@ rule token = parse
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
 | "blr"  {BLR}
+| "bl"  {BL}
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}
 | ":"  {COLON}
