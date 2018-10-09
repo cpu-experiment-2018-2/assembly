@@ -48,9 +48,11 @@ rule token = parse
 | "cmpdi"  {CMPDI}
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
+| "blr"  {BLR}
+| "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}
 | ":"  {COLON}
-| (lower|'.') (digit|lower|upper|'_')* 
+| (lower|'.') (digit|lower|upper|'_'|'.')* 
     { IDENT(Lexing.lexeme lexbuf) }
 | _ 
     { failwith

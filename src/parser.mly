@@ -23,6 +23,8 @@ exception ParseError
 %token CMPD
 %token BEQ
 %token BLE
+%token BLR
+%token END
 %token IN
 %token OUT
 %token JUMP
@@ -56,6 +58,9 @@ order:
     | CMPD reg COMMA reg { CMPD($2,$4)}
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}
+    | BLR { BLR}
+    | END { END}
+
     | IN reg { IN($2)}
     | OUT reg { OUT($2)}
     | JUMP IDENT {JUMP($2)}
