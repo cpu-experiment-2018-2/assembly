@@ -16,5 +16,12 @@ jump_test:
     cmpd %r3,%r4 
     beq test_op
     ble test_data
-    in %r30
-    out %r31
+    lis %r1,10
+    inll %r30
+    outll %r31
+    inlh %r30
+    outlh %r31
+    inul %r30
+    outul %r31
+    inuh %r30
+    outuh %r31
