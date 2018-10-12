@@ -40,8 +40,15 @@ rule token = parse
 | "divi"  {DIVI}
 | "div"  {DIV}
 | "mr"  {MR}
-| "in"  {IN}
-| "out"  {OUT}
+| "inll"  {INLL}
+| "inlh"  {INLH}
+| "inul"  {INUL}
+| "inuh"  {INUH}
+| "outll"  {OUTLL}
+| "outlh"  {OUTLH}
+| "outul"  {OUTUL}
+| "outuh"  {OUTUH}
+| "lis"  {LIS}
 | "li"  {LI}
 | "store"  {STORE}
 | "load"  {LOAD}

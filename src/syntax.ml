@@ -1,3 +1,5 @@
+type pos = LL | LH | UL | UH [@@deriving show]
+
 type t =
   | Label of string
   | ADDI of int * int * int
@@ -11,6 +13,7 @@ type t =
   | AND of int * int * int
   | OR of int * int * int
   | LI of int * int
+  | LIS of int * int
   | STORE of int * int * int
   | LOAD of int * int * int
   | CMPDI of int * int
@@ -18,8 +21,8 @@ type t =
   | BEQ of string
   | BLE of string
   | JUMP of string
-  | IN of int
-  | OUT of int
+  | IN of int * pos
+  | OUT of int * pos
   | BLR
   | BL of string
   | END

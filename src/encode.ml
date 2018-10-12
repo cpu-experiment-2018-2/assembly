@@ -1,5 +1,7 @@
 open Syntax
 
+let get_pos = function LL -> "000" | LH -> "001" | UL -> "010" | UH -> "011"
+
 let opcode e =
   match e with
   | Label _ -> failwith "label doesn't appear in bin"
@@ -18,14 +20,15 @@ let opcode e =
   | BLE _ -> "101001"
   | AND _ -> "010000"
   | OR _ -> "010001"
-  | IN _ -> "110000"
-  | OUT _ -> "110001"
+  | IN (_, x) -> "110" ^ get_pos x
+  | OUT (_, x) -> "110" ^ get_pos x
   | END -> "111000"
   | BLR -> "100001"
   | BL _ -> "100010"
   | CMPD _ -> "101010"
   | CMPDI _ -> failwith "yet implemented"
   | LI _ -> "011010"
+  | LIS _ -> "011011"
 
 let binary_encode keta number =
   let str = Bytes.make keta '0' in
@@ -58,9 +61,10 @@ let encode env e =
               List.assoc label env
           | LOAD (t, a, d) | STORE (t, a, d) -> (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
+          | LIS (t, d) -> (t lsl 21) lor d
           | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)
-          | IN a -> a lsl 21
-          | OUT a -> a lsl 21
+          | IN (a, x) -> a lsl 21
+          | OUT (a, x) -> a lsl 21
           | Label _ -> failwith "label is unreachble"
           | BLR _ -> 0
           | END _ -> 0
