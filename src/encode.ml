@@ -1,6 +1,8 @@
 open Syntax
 
-let get_pos = function LL -> "000" | LH -> "001" | UL -> "010" | UH -> "011"
+let get_pos_in = function LL -> "000" | LH -> "001" | UL -> "010" | UH -> "011"
+let get_pos_out = function LL -> "100" | LH -> "101" | UL -> "110" | UH -> "111"
+
 
 let opcode e =
   match e with
@@ -20,8 +22,8 @@ let opcode e =
   | BLE _ -> "101001"
   | AND _ -> "010000"
   | OR _ -> "010001"
-  | IN (_, x) -> "110" ^ get_pos x
-  | OUT (_, x) -> "110" ^ get_pos x
+  | IN (_, x) -> "110" ^ get_pos_in x
+  | OUT (_, x) -> "110" ^ get_pos_out x
   | END -> "111000"
   | BLR -> "100001"
   | BL _ -> "100010"
