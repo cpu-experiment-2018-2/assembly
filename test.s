@@ -25,3 +25,5 @@ jump_test:
     outul %r31
     inuh %r30
     outuh %r31
+    li %r28,111111111
+    li %r27,-1

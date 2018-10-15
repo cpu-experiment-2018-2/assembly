@@ -1,8 +1,16 @@
 open Syntax
 
-let get_pos_in = function LL -> "000" | LH -> "001" | UL -> "010" | UH -> "011"
-let get_pos_out = function LL -> "100" | LH -> "101" | UL -> "110" | UH -> "111"
+let get_pos_in = function
+  | LL -> "000"
+  | LH -> "001"
+  | UL -> "010"
+  | UH -> "011"
 
+let get_pos_out = function
+  | LL -> "100"
+  | LH -> "101"
+  | UL -> "110"
+  | UH -> "111"
 
 let opcode e =
   match e with

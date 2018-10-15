@@ -35,6 +35,9 @@ rule token = parse
     let t = String.sub t 2 ((String.length t)-2) in
     PERCENTINT(int_of_string t)
     }
+| "-"digit+{
+        INT((int_of_string (Lexing.lexeme lexbuf))) 
+    }
 | digit+ 
     { INT(int_of_string (Lexing.lexeme lexbuf)) }
 | digit+ ('.' digit*)? (['e' 'E'] ['+' '-']? digit+)?

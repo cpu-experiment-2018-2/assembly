@@ -1,3 +1,5 @@
+open Syntax
+
 let to_bin p =
   let conv x =
     let t31_24 = "0b" ^ String.sub x 0 8 in
@@ -10,10 +12,6 @@ let to_bin p =
   in
   Bytes.concat Bytes.empty (List.concat (List.map conv p))
 
-let lexbuf l =
-  let p = Parser.exp Lexer.token l |> Encode.f in
-  p
-
 let arg name argv = Array.exists (fun x -> x = name) argv
 
 let _ =
@@ -21,6 +19,26 @@ let _ =
     "usage: ./main.native filename [-option]\n\
      \t-txt : convert to binary string outputed to filename.txt \n\
      \totherwise : convert to binary outputed to filename.oo\n"
+
+let rec extend x =
+  match x with
+  | [] -> []
+  | x :: y ->
+      ( match x with
+      | LI (var, x) ->
+          if x >= 1 lsl 16 then
+            [LIS (var, x lsr 16); LI (var, x land ((1 lsl 16) - 1))]
+          else if x < 0 then
+            let _ = print_string "set minus value\n" in
+            [ LIS (var, (x lsr 16) land ((1 lsl 16) - 1))
+            ; LI (var, x land ((1 lsl 16) - 1)) ]
+          else [LI (var, x)]
+      | _ -> [x] )
+      @ extend y
+
+let lexbuf l =
+  let p = Parser.exp Lexer.token l |> extend |> Encode.f in
+  p
 
 let _ =
   let filename = Sys.argv.(1) in
