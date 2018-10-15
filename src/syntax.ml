@@ -21,6 +21,8 @@ type t =
   | BEQ of string
   | BLE of string
   | JUMP of string
+  | FTOI of int * int
+  | ITOF of int * int
   | IN of int * pos
   | OUT of int * pos
   | BLR

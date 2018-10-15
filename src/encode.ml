@@ -21,6 +21,8 @@ let opcode e =
   | DIVI _ -> "000011"
   | ADD _ -> "001000"
   | SUB _ -> "001001"
+  | ITOF _ -> "010010"
+  | FTOI _ -> "010011"
   | MUL _ -> "001010"
   | DIV _ -> "001011"
   | LOAD _ -> "011000"
@@ -72,9 +74,8 @@ let encode env e =
           | LOAD (t, a, d) | STORE (t, a, d) -> (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
           | LIS (t, d) -> (t lsl 21) lor d
-          | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)
-          | IN (a, x) -> a lsl 21
-          | OUT (a, x) -> a lsl 21
+          | CMPD (a, b) | FTOI (a, b) | ITOF (a, b) -> (a lsl 21) lor (b lsl 16)
+          | IN (a, _) | OUT (a, _) -> a lsl 21
           | Label _ -> failwith "label is unreachble"
           | BLR _ -> 0
           | END _ -> 0

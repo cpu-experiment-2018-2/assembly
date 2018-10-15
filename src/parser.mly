@@ -20,6 +20,8 @@ exception ParseError
 %token LIS
 %token STORE
 %token LOAD
+%token ITOF
+%token FTOI
 %token CMPDI
 %token CMPD
 %token BL
@@ -65,6 +67,9 @@ order:
     | STORE reg COMMA reg COMMA INT { STORE($2,$4,$6)}
     | CMPDI reg COMMA INT { CMPDI($2,$4)}
     | CMPD reg COMMA reg { CMPD($2,$4)}
+    | FTOI reg COMMA reg { CMPD($2,$4)}
+    | ITOF reg COMMA reg { CMPD($2,$4)}
+
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}
     | BLR { BLR}

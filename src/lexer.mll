@@ -64,6 +64,8 @@ rule token = parse
 | "outul"  {OUTUL}
 | "outuh"  {OUTUH}
 | "lis"  {LIS}
+| "ftoi"  {FTOI}
+| "itof"  {ITOF}
 | "li"  {LI}
 | "store"  {STORE}
 | "load"  {LOAD}
