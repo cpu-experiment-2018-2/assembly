@@ -17,6 +17,18 @@ rule token = parse
 | "(*"
     { comment lexbuf; 
       token lexbuf }
+| "%sp"
+{
+    PERCENTINT(1)
+
+}
+| "%fp"
+{
+    PERCENTINT(2)
+}
+| "%lr"{
+    PERCENTINT(31)
+}
 | "%r"digit+{
 
     let t =  (Lexing.lexeme lexbuf) in
