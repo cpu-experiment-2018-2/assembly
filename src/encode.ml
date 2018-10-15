@@ -60,7 +60,8 @@ let encode env e =
       let t =
         binary_encode 26
           ( match e with
-          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d) ->
+          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d)
+            ->
               (t lsl 21) lor (s lsl 16) lor d
           | ADD (t, a, b)
            |SUB (t, a, b)

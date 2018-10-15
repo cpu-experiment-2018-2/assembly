@@ -27,11 +27,10 @@ let rec extend x =
       ( match x with
       | LI (var, x) ->
           if x >= 1 lsl 16 then
-            [LIS (var, x lsr 16); LI (var, x land ((1 lsl 16) - 1))]
+            [LI (var, x land ((1 lsl 16) - 1)); LIS (var, x lsr 16)]
           else if x < 0 then
-            let _ = print_string "set minus value\n" in
-            [ LIS (var, (x lsr 16) land ((1 lsl 16) - 1))
-            ; LI (var, x land ((1 lsl 16) - 1)) ]
+            [ LI (var, x land ((1 lsl 16) - 1))
+            ; LIS (var, (x lsr 16) land ((1 lsl 16) - 1)) ]
           else [LI (var, x)]
       | _ -> [x] )
       @ extend y
