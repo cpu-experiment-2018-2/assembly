@@ -15,6 +15,7 @@ let get_pos_out = function
 let opcode e =
   match e with
   | Label _ -> failwith "label doesn't appear in bin"
+  | LocalLabel _ -> failwith "LocalLabel doesn't appear in bin"
   | ADDI _ -> "000000"
   | SUBI _ -> "000001"
   | MULI _ -> "000010"
@@ -57,6 +58,7 @@ let binary_encode keta number =
 let encode env e =
   match e with
   | Label s -> []
+  | LocalLabel s -> []
   | _ ->
       let op = opcode e in
       let t =
@@ -94,6 +96,7 @@ let encode env e =
 let make_env (env, counter) expr =
   match expr with
   | Label s -> ((s, counter) :: env, counter)
+  | LocalLabel s -> ((s, counter) :: env, counter)
   | _ -> (env, counter + 1)
 
 let f exp_list =

@@ -46,20 +46,29 @@ let read_file name =
   let p = lexbuf (Lexing.from_channel ic) in
   p
 
-let lib_path =
-  List.concat
-    (List.map
-       (fun x ->
-         match x with Some x -> [x ^ "/assembly/lib/lib.st"] | None -> [] )
-       [Sys.getenv_opt "CPU_TOOLS_PATH"])
+let libpath =
+  match Sys.getenv_opt "CPU_LIB_PATH" with
+  | Some x -> x
+  | None -> failwith "Set CPU_LIB_PATH to the path of assembly/lib"
 
-(* let lib_path = [] *)
+let libs = List.map (fun x -> libpath ^ x) ["lib.st"; "itof.st"]
 
 let _ =
   let filename = Sys.argv.(1) in
   let main = read_file filename in
-  let libs = List.concat (List.map read_file lib_path) in
-  let p = encode (libs @ main) in
+  let libs = List.map read_file libs in
+  let p = libs @ [main] in
+  let p =
+    List.concat
+      (snd
+         (List.fold_left
+            (fun (counter, acc) x ->
+              (counter + 1, change (string_of_int counter) x :: acc) )
+            (0, []) p))
+  in
+  (* 暇なとき実装する *)
+  let p = JUMP "main" :: p in
+  let p = encode p in
   if arg "-txt" Sys.argv then
     let oname = filename ^ ".txt" in
     let oc = open_out oname in
