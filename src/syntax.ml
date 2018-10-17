@@ -10,6 +10,10 @@ type t =
   | MUL of int * int * int
   | DIV of int * int * int
   | SUB of int * int * int
+  | FADD of int * int * int
+  | FMUL of int * int * int
+  | FDIV of int * int * int
+  | FSUB of int * int * int
   | AND of int * int * int
   | OR of int * int * int
   | LI of int * int

@@ -21,10 +21,12 @@ let opcode e =
   | DIVI _ -> "000011"
   | ADD _ -> "001000"
   | SUB _ -> "001001"
-  | ITOF _ -> "010010"
-  | FTOI _ -> "010011"
   | MUL _ -> "001010"
   | DIV _ -> "001011"
+  | FADD _ -> "001100"
+  | FSUB _ -> "001101"
+  | FMUL _ -> "001110"
+  | FDIV _ -> "001111"
   | LOAD _ -> "011000"
   | STORE _ -> "011001"
   | JUMP _ -> "100000"
@@ -66,6 +68,10 @@ let encode env e =
            |SUB (t, a, b)
            |MUL (t, a, b)
            |DIV (t, a, b)
+           |FADD (t, a, b)
+           |FSUB (t, a, b)
+           |FMUL (t, a, b)
+           |FDIV (t, a, b)
            |AND (t, a, b)
            |OR (t, a, b) ->
               (t lsl 21) lor (a lsl 16) lor (b lsl 11)

@@ -46,7 +46,14 @@ let read_file name =
   let p = lexbuf (Lexing.from_channel ic) in
   p
 
-let lib_path = [Sys.getenv "CPU_TOOLS_PATH" ^ "/assembly/lib/lib.st"]
+let lib_path =
+  List.concat
+    (List.map
+       (fun x ->
+         match x with Some x -> [x ^ "/assembly/lib/lib.st"] | None -> [] )
+       [Sys.getenv_opt "CPU_TOOLS_PATH"])
+
+(* let lib_path = [] *)
 
 let _ =
   let filename = Sys.argv.(1) in
