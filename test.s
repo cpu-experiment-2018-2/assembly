@@ -11,7 +11,7 @@ test_op:
 test_data:
     load %r4,%r5,5 (* %r4 <- [%r5+100] *)
     store %r4,%r5,6 (* [%r5+100] <- %r4 *)
-jump_test: 
+main: 
     jump test_opi
     cmpd %r3,%r4 
     beq test_op

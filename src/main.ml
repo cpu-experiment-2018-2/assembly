@@ -35,14 +35,24 @@ let rec extend x =
       | _ -> [x] )
       @ extend y
 
-let lexbuf l =
-  let p = Parser.exp Lexer.token l |> extend |> Encode.f in
+let lexbuf p =
+  let p = Parser.exp Lexer.token p in
   p
+
+let encode p = p |> extend |> Encode.f
+
+let read_file name =
+  let ic = open_in name in
+  let p = lexbuf (Lexing.from_channel ic) in
+  p
+
+let lib_path = [Sys.getenv "CPU_TOOLS_PATH" ^ "/assembly/lib/lib.st"]
 
 let _ =
   let filename = Sys.argv.(1) in
-  let ic = open_in filename in
-  let p = lexbuf (Lexing.from_channel ic) in
+  let main = read_file filename in
+  let libs = List.concat (List.map read_file lib_path) in
+  let p = encode (libs @ main) in
   if arg "-txt" Sys.argv then
     let oname = filename ^ ".txt" in
     let oc = open_out oname in

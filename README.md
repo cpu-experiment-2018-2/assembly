@@ -12,14 +12,15 @@ make
 
 # usage
 ```
-./main.native test.s
+./main.native test.st
 ```
 でtest.s.ooにバイナリがはかれる.
 
 ```
-./main.native test.s -txt
+./main.native test.st -txt
 ```
 でtest.s.txtに文字列の２進数表記がでる
 
 * 文法はtest.sに書いてあるのがほとんど
+* mainラベルが存在する必要がある
 

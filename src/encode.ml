@@ -60,8 +60,7 @@ let encode env e =
       let t =
         binary_encode 26
           ( match e with
-          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d)
-            ->
+          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d) ->
               (t lsl 21) lor (s lsl 16) lor d
           | ADD (t, a, b)
            |SUB (t, a, b)
@@ -70,8 +69,10 @@ let encode env e =
            |AND (t, a, b)
            |OR (t, a, b) ->
               (t lsl 21) lor (a lsl 16) lor (b lsl 11)
-          | JUMP label | BEQ label | BLE label | BL label ->
-              List.assoc label env
+          | JUMP label | BEQ label | BLE label | BL label -> (
+            match List.find_opt (fun (x, y) -> label = x) env with
+            | Some (x, y) -> y
+            | None -> failwith label )
           | LOAD (t, a, d) | STORE (t, a, d) -> (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
           | LIS (t, d) -> (t lsl 21) lor d
