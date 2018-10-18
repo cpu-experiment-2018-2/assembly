@@ -17,6 +17,8 @@ type t =
   | FSUB of int * int * int
   | AND of int * int * int
   | OR of int * int * int
+  | SRAWI of int * int  * int
+  | SLAWI of int * int * int
   | LI of int * int
   | LIS of int * int
   | STORE of int * int * int
@@ -27,8 +29,6 @@ type t =
   | BLE of string
   | JUMP of string
   | BL of string
-  | FTOI of int * int
-  | ITOF of int * int
   | IN of int * pos
   | OUT of int * pos
   | BLR

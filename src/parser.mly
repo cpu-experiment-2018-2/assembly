@@ -11,10 +11,20 @@ exception ParseError
 %token ADD
 %token SUBI 
 %token SUB
+%token SLAWI
+%token SRAWI
 %token MULI 
 %token MUL
 %token DIVI
 %token DIV
+%token FADDI 
+%token FADD
+%token FSUBI 
+%token FSUB
+%token FMULI 
+%token FMUL
+%token FDIVI
+%token FDIV
 %token MR
 %token LI
 %token LIS
@@ -41,6 +51,7 @@ exception ParseError
 %token COLON
 %token <int> PERCENTINT
 %token <string> IDENT
+%token <string> ATATIDENT
 %type <Syntax.t list> exp
 %start exp
 %%
@@ -52,7 +63,14 @@ label:
 reg: 
     | PERCENTINT {$1}
 order:
-    | label  { Label($1) }
+    | label { 
+        let t =  $1 in
+        if String.length t < 2 then Label(t) else 
+        (
+            let t = String.sub t 0 2 in
+            if t = "@@" then LocalLabel($1) else Label($1)
+        )
+        }
     | ADDI reg COMMA reg COMMA INT { ADDI($2,$4,$6) }
     | MULI reg COMMA reg COMMA INT { MULI($2,$4,$6) }
     | SUBI reg COMMA reg COMMA INT { SUBI($2,$4,$6) }
@@ -61,6 +79,10 @@ order:
     | MUL reg COMMA reg COMMA reg { MUL($2,$4,$6) }
     | SUB reg COMMA reg COMMA reg { SUB($2,$4,$6) }
     | DIV reg COMMA reg COMMA reg { DIV($2,$4,$6) }
+    | FADD reg COMMA reg COMMA reg { FADD($2,$4,$6) }
+    | FMUL reg COMMA reg COMMA reg { FMUL($2,$4,$6) }
+    | FSUB reg COMMA reg COMMA reg { FSUB($2,$4,$6) }
+    | FDIV reg COMMA reg COMMA reg { FDIV($2,$4,$6) }
     | LIS reg COMMA INT { LIS($2,$4)}
     | LI reg COMMA INT { LI($2,$4)}
     | LOAD reg COMMA reg COMMA INT { LOAD($2,$4,$6)}
@@ -69,11 +91,11 @@ order:
     | CMPD reg COMMA reg { CMPD($2,$4)}
     | FTOI reg COMMA reg { CMPD($2,$4)}
     | ITOF reg COMMA reg { CMPD($2,$4)}
-
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}
-    | BLR { BLR}
     | BL IDENT { BL($2)}
+    | JUMP IDENT {JUMP($2)}
+    | BLR { BLR}
     | END { END}
     | INLL reg { IN($2,LL)}
     | INLH reg { IN($2,LH)}
@@ -83,7 +105,8 @@ order:
     | OUTLH reg { OUT($2,LH)}
     | OUTUL reg { OUT($2,UL)}
     | OUTUH reg { OUT($2,UH)}
-    | JUMP IDENT {JUMP($2)}
+    | SLAWI reg COMMA reg COMMA INT  { SLAWI($2,$4,$6)}
+    | SRAWI reg COMMA reg COMMA INT { SRAWI($2,$4,$6)}
     | error 
     {
     let lex = (Parsing.symbol_end_pos ()).Lexing.pos_lnum in

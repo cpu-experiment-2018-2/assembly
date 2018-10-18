@@ -30,7 +30,6 @@ rule token = parse
     PERCENTINT(31)
 }
 | "%r"digit+{
-
     let t =  (Lexing.lexeme lexbuf) in
     let t = String.sub t 2 ((String.length t)-2) in
     PERCENTINT(int_of_string t)
@@ -54,6 +53,12 @@ rule token = parse
 | "mul"  {MUL}
 | "divi"  {DIVI}
 | "div"  {DIV}
+| "fadd"  {FADD}
+| "fsub"  {FSUB}
+| "fmul"  {FMUL}
+| "fdiv"  {FDIV}
+| "srawi" { SRAWI}
+| "slawi" { SLAWI}
 | "mr"  {MR}
 | "inll"  {INLL}
 | "inlh"  {INLH}
@@ -77,7 +82,7 @@ rule token = parse
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}
 | ":"  {COLON}
-| (lower|'.') (digit|lower|upper|'_'|'.')* 
+| (upper|lower|'.'|"@@") (digit|lower|upper|'_'|'.')* 
     { IDENT(Lexing.lexeme lexbuf) }
 | _ 
     { failwith
