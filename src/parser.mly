@@ -8,6 +8,8 @@ exception ParseError
 %token COMMA
 %token EOF
 %token ADDI 
+%token INC
+%token DEC
 %token ADD
 %token SUBI 
 %token SUB
@@ -28,6 +30,7 @@ exception ParseError
 %token MR
 %token LI
 %token LIS
+%token FLI
 %token STORE
 %token LOAD
 %token ITOF
@@ -84,12 +87,16 @@ order:
     | FSUB reg COMMA reg COMMA reg { FSUB($2,$4,$6) }
     | FDIV reg COMMA reg COMMA reg { FDIV($2,$4,$6) }
     | LIS reg COMMA INT { LIS($2,$4)}
+    | FLI reg COMMA FLOAT { FLI($2,$4)}
     | LI reg COMMA INT { LI($2,$4)}
     | LOAD reg COMMA reg COMMA INT { LOAD($2,$4,$6)}
     | STORE reg COMMA reg COMMA INT { STORE($2,$4,$6)}
     | CMPDI reg COMMA INT { CMPDI($2,$4)}
     | CMPD reg COMMA reg { CMPD($2,$4)}
     | FTOI reg COMMA reg { CMPD($2,$4)}
+    | INC reg { ADDI($2,$2,1)}
+    | MR reg COMMA reg { ADDI($2,$4,0)}
+    | DEC reg { SUBI($2,$2,1)}
     | ITOF reg COMMA reg { CMPD($2,$4)}
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}

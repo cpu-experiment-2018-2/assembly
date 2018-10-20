@@ -32,7 +32,10 @@ rule token = parse
 | "%r"digit+{
     let t =  (Lexing.lexeme lexbuf) in
     let t = String.sub t 2 ((String.length t)-2) in
-    PERCENTINT(int_of_string t)
+    let s = int_of_string t in
+    if s >= 32 then
+        failwith ("register number should be <= 31, but found" ^ t) else 
+    PERCENTINT(s)
     }
 | "-"digit+{
         INT((int_of_string (Lexing.lexeme lexbuf))) 
@@ -69,6 +72,7 @@ rule token = parse
 | "outul"  {OUTUL}
 | "outuh"  {OUTUH}
 | "lis"  {LIS}
+| "fli"  {FLI}
 | "ftoi"  {FTOI}
 | "itof"  {ITOF}
 | "li"  {LI}
@@ -78,6 +82,9 @@ rule token = parse
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
 | "blr"  {BLR}
+| "mr"  {MR}
+| "inc"  {INC}
+| "dec"  {DEC}
 | "bl"  {BL}
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}

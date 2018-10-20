@@ -20,6 +20,7 @@ type t =
   | SRAWI of int * int  * int
   | SLAWI of int * int * int
   | LI of int * int
+  | FLI of int * float
   | LIS of int * int
   | STORE of int * int * int
   | LOAD of int * int * int

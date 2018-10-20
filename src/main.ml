@@ -1,3 +1,5 @@
+external getint : float -> int = "getint"
+
 open Syntax
 
 let to_bin p =
@@ -32,6 +34,8 @@ let rec extend x =
             [ LI (var, x land ((1 lsl 16) - 1))
             ; LIS (var, (x lsr 16) land ((1 lsl 16) - 1)) ]
           else [LI (var, x)]
+      | FLI (x,f) -> 
+              extend ([LI(x,getint f)]) 
       | _ -> [x] )
       @ extend y
 
@@ -61,21 +65,17 @@ let libpath =
   | Some x -> x
   | None -> failwith "Set CPU_LIB_PATH to the path of assembly/lib"
 
-let libs = List.map (fun x -> libpath ^ x) ["lib.st"; "itof.st"]
+let libs = List.map (fun x -> libpath ^ x) ["lib.st"; "itof.st";"sincos.st";"ftoi.st"]
 
 let _ =
   let filename = Sys.argv.(1) in
   let main = read_file filename in
-  let libs = List.map read_file libs in
-  let p = libs @ [main] in
+  let _ = Printf.printf "Warning: Loading a libray\n" in
+  let libs = List.map (fun x -> Printf.printf "linking %s\n" x ;read_file x )libs in
+  let libs = List.fold_left ( fun (acc,counter) p -> 
+      ( (change (string_of_int counter) p) :: acc,counter + 1)) ([],0) (libs @[main]) in
   let p =
-    List.concat
-      (snd
-         (List.fold_left
-            (fun (counter, acc) x ->
-              (counter + 1, change (string_of_int counter) x :: acc) )
-            (0, []) p))
-  in
+    List.concat (fst libs) in
   (* 暇なとき実装する *)
   let p = JUMP "main" :: p in
   let p = encode p filename in
