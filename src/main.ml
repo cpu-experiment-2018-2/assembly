@@ -39,7 +39,17 @@ let lexbuf p =
   let p = Parser.exp Lexer.token p in
   p
 
-let encode p = p |> extend |> Encode.f
+let encode p filename =
+    let p = p |> extend in
+    let oc = open_out (filename^".debug") in
+    let counter = ref 0 in
+    let _ = List.iter (fun x -> 
+    match x with
+    | LocalLabel (x) | Label(x) -> 
+        Printf.fprintf oc "%s: \n" x 
+    | _ -> 
+        (Printf.fprintf oc "%d: %s\n" !counter (Syntax.show x) ; counter := !counter + 1) ) p in
+    Encode.f p
 
 let read_file name =
   let ic = open_in name in
@@ -68,7 +78,7 @@ let _ =
   in
   (* 暇なとき実装する *)
   let p = JUMP "main" :: p in
-  let p = encode p in
+  let p = encode p filename in
   if arg "-txt" Sys.argv then
     let oname = filename ^ ".txt" in
     let oc = open_out oname in
