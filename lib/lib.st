@@ -10,6 +10,74 @@ print_float : (* Asm.FunCall Global *)
 	outlh %r3 (* Global *)
 	outll %r3 (* Global *)
 	blr
+neg:
+    li %r4,0
+    sub %r3,%r4,%r3
+    blr
+fneg:
+    fli %r4,0.0
+    fsub %r3,%r4,%r3
+    blr
+
+read_int:
+    inuh %r3
+    inul %r3
+    inlh %r3
+    inll %r3
+    blr
+
+read_float:
+    inuh %r3
+    inul %r3
+    inlh %r3
+    inll %r3
+    blr
+ 
+fsqr:
+    jump sqrt
+
+fhalf:
+    fli %r4,0.5
+    fmul %r3,%r4,%r3
+
+fisneg:
+    li %r4,0
+    cmpd %r4,%r3
+    ble @@fisneg_pos
+    li %r3,1
+    jump @@fisneg_end
+@@fisneg_pos:
+    li %r3,0
+@@fisneg_end:
+    blr
+
+fispos:
+    li %r4,0
+    cmpd %r3,%r4
+    ble @@fispos_neg
+    li %r3,1
+    jump @@fispos_end
+@@fispos_neg:
+    li %r3,0
+@@fispos_end:
+    blr
+
+
+
+fiszero:
+    li %r4,0
+    cmpd %r4,%r3
+    beq @@fiszero_true
+    li %r3,0
+    jump @@fisneg_end
+@@fiszero_true:
+    li %r3,1
+@@fiszero_end:
+    blr
+
+    
+    
+
 not:
     li %r4,1
     cmpd %r4,%r3
@@ -30,8 +98,6 @@ leq:
     li %r3,1
 @@leq.end:
     blr
-
-
 print_char : (* Asm.FunCall Global *)
 	outll %r3 (* Global *)
 	blr
@@ -53,59 +119,34 @@ print_newline:
     li %r3, 10
     outll %r3
     blr
-kernel_sin:
-    fmul %r4,%r3,%r3
-    
-    fli %r5, 0.008332824
-    fli %r6, 0.00019587841 
-    fmul %r6,%r6,%r4
-    fsub %r5,%r5,%r6
-    fli %r6, 0.16666668
-    fmul %r5,%r5,%r4
-    fsub %r6,%r6,%r5
-    fli %r5, 1.0
-    fmul %r6,%r6,%r4
-    fsub %r5,%r5,%r6
-    fmul %r3,%r3,%r5
-    blr
-kernel_cos:
-    fmul %r4,%r3,%r3
-    fli %r6, 0.0013695068
-    fli %r5, 0.04166368 
-    fmul %r6,%r6,%r4
-    fsub %r5,%r5,%r6
-    fli %r6, 0.5
-    fmul %r5,%r5,%r4
-    fsub %r6,%r6,%r5
-    fli %r5, 1.0
-    fmul %r6,%r6,%r4
-    fsub %r5,%r5,%r6
-    mr %r3,%r5
-    blr
-reduction:
-    fli %r4,6.28318530718
-    li %r5, 0
-    li %r6, 1258291200
-@@reduction_loop:
-    mr %r7,%r5
-    add %r7,%r7,%r6 
-    fsub %r7,%r7,%r6
-    fmul %r7, %r7,%r4 
-    subi %r7,%r7,1 
-    cmpd %r3,%r7
-    ble @@reduction_end
-    inc %r5
-    jump  @@reduction_loop
-@@reduction_end:
-    dec %r5 
-    add %r5,%r5,%r6 
-    fsub %r5,%r5,%r6
-    fmul %r5,%r5,%r4
-    fsub %r3,%r3,%r5
-    blr
-kernel_atan:
-    fmul %r4,%r3,%r3
-    li %r5, 0.060035485
-    li %r6, 0.08976446
 
-    
+alloc:
+    li %r30,0
+    load %r29, %r30, 0
+    add %r28, %r29, %r3
+    store %r28, %r30, 0
+    mr %r3, %r29
+    blr
+
+create_array:
+	addi %fp,%sp,0 (* Global *)
+	store %lr,%fp, 1 (* Global *)
+	addi %sp,%sp, 2 (* Global *)
+    mr %r5,%r3
+    bl alloc 
+    li %r6, 0
+    mr %r7,%r3
+    jump @@init_loop 
+@@init_loop:
+    cmpd %r5,%r6
+    beq @@array_create_end
+    store %r4,%r7,0
+    subi %r5,%r5,1
+    addi %r7,%r7,1
+    jump @@init_loop
+@@array_create_end:
+    load %lr, %fp ,1 (* Global *)
+	addi %sp,%fp,0 (* Global *)
+	load %fp, %fp ,0 (* Global *)
+    blr
+

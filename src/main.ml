@@ -34,8 +34,7 @@ let rec extend x =
             [ LI (var, x land ((1 lsl 16) - 1))
             ; LIS (var, (x lsr 16) land ((1 lsl 16) - 1)) ]
           else [LI (var, x)]
-      | FLI (x,f) -> 
-              extend ([LI(x,getint f)]) 
+      | FLI (x, f) -> extend [LI (x, getint f)]
       | _ -> [x] )
       @ extend y
 
@@ -44,16 +43,20 @@ let lexbuf p =
   p
 
 let encode p filename =
-    let p = p |> extend in
-    let oc = open_out (filename^".debug") in
-    let counter = ref 0 in
-    let _ = List.iter (fun x -> 
-    match x with
-    | LocalLabel (x) | Label(x) -> 
-        Printf.fprintf oc "%s: \n" x 
-    | _ -> 
-        (Printf.fprintf oc "%d: %s\n" !counter (Syntax.show x) ; counter := !counter + 1) ) p in
-    Encode.f p
+  let p = p |> extend in
+  let oc = open_out (filename ^ ".debug") in
+  let counter = ref 0 in
+  let _ =
+    List.iter
+      (fun x ->
+        match x with
+        | LocalLabel x | Label x -> Printf.fprintf oc "%s: \n" x
+        | _ ->
+            Printf.fprintf oc "%d: %s\n" !counter (Syntax.show x) ;
+            counter := !counter + 1 )
+      p
+  in
+  Encode.f p
 
 let read_file name =
   let ic = open_in name in
@@ -65,17 +68,34 @@ let libpath =
   | Some x -> x
   | None -> failwith "Set CPU_LIB_PATH to the path of assembly/lib"
 
-let libs = List.map (fun x -> libpath ^ x) ["lib.st"; "itof.st";"sincos.st";"ftoi.st"]
+let libs =
+  List.map
+    (fun x -> libpath ^ x)
+    [ "lib.st"
+    ; "invsqrt.st"
+    ; "trigonometric_kernels.st"
+    ; "trigonometric.st"
+    ; "type_conversion.st" ]
 
 let _ =
   let filename = Sys.argv.(1) in
   let main = read_file filename in
   let _ = Printf.printf "Warning: Loading a libray\n" in
-  let libs = List.map (fun x -> Printf.printf "linking %s\n" x ;read_file x )libs in
-  let libs = List.fold_left ( fun (acc,counter) p -> 
-      ( (change (string_of_int counter) p) :: acc,counter + 1)) ([],0) (libs @[main]) in
-  let p =
-    List.concat (fst libs) in
+  let libs =
+    List.map
+      (fun x ->
+        Printf.printf "linking %s\n" x ;
+        read_file x )
+      libs
+  in
+  let libs =
+    List.fold_left
+      (fun (acc, counter) p ->
+        (change (string_of_int counter) p :: acc, counter + 1) )
+      ([], 0)
+      (libs @ [main])
+  in
+  let p = List.concat (fst libs) in
   (* 暇なとき実装する *)
   let p = JUMP "main" :: p in
   let p = encode p filename in

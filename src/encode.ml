@@ -28,8 +28,8 @@ let opcode e =
   | FSUB _ -> "001101"
   | FMUL _ -> "001110"
   | FDIV _ -> "001111"
-  | SLAWI _ -> "010010"
-  | SRAWI _ -> "010011"
+  | SRAWI _ -> "010010"
+  | SLAWI _ -> "010011"
   | LOAD _ -> "011000"
   | STORE _ -> "011001"
   | JUMP _ -> "100000"
@@ -76,8 +76,6 @@ let encode env e =
            |FSUB (t, a, b)
            |FMUL (t, a, b)
            |FDIV (t, a, b)
-           |SLAWI (t, a, b)
-           |SRAWI (t, a, b)
            |AND (t, a, b)
            |OR (t, a, b) ->
               (t lsl 21) lor (a lsl 16) lor (b lsl 11)
@@ -85,7 +83,8 @@ let encode env e =
             match List.find_opt (fun (x, y) -> label = x) env with
             | Some (x, y) -> y
             | None -> failwith label )
-          | LOAD (t, a, d) | STORE (t, a, d) -> (t lsl 21) lor (a lsl 16) lor d
+          | LOAD (t, a, d) | STORE (t, a, d) | SLAWI (t, a, d) | SRAWI (t, a, d) ->
+              (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
           | LIS (t, d) -> (t lsl 21) lor d
           | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)
