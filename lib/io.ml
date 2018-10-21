@@ -23,7 +23,7 @@ let rec print_int_plus x flag =
         (if flag then  (print_int_plus y nflag;(print_char (48+r))) else ())
 in
 let rec print_int x = 
-    if x = 0 then (print_char 48;print_char 0) else if x = 1 then (print_char 49;print_char 0) else
+    if x = 0 then (print_char 48) else if x = 1 then (print_char 49) else
     let _ = 
     if x >= 0 then
         print_int_plus x true
@@ -32,20 +32,20 @@ let rec print_int x =
         print_int_plus (0-x) true
         )
     in 
-    print_char 0
+    ()
 
 in
 let rec print_float_plus x = 
     if x >= 4000.0 then
         (
-        print_int_plus (int_of_float x) true;print_char 46;print_char 0
+        print_int_plus (int_of_float x) true;print_char 46
         )
     else
         (
         let a = (floor x) in
         let b = x -. a in
         print_int_plus (int_of_float a) true ;print_char 46;
-            (print_int_plus (int_of_float (b *. 1000.0)) true;print_char 0
+            (print_int_plus (int_of_float (b *. 1000.0)) true
          )
         )
 in
