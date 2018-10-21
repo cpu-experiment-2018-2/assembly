@@ -1,15 +1,3 @@
-print_int : (* Asm.FunCall Global *)
-	outuh %r3 (* Global *)
-	outul %r3 (* Global *)
-	outlh %r3 (* Global *)
-	outll %r3 (* Global *)
-	blr
-print_float : (* Asm.FunCall Global *)
-	outuh %r3 (* Global *)
-	outul %r3 (* Global *)
-	outlh %r3 (* Global *)
-	outll %r3 (* Global *)
-	blr
 neg:
     li %r4,0
     sub %r3,%r4,%r3
@@ -32,13 +20,19 @@ read_float:
     inlh %r3
     inll %r3
     blr
- 
+
+div2:
+    srawi %r3,%r3, 1
+    blr
+    
 fsqr:
     jump sqrt
+    
 
 fhalf:
     fli %r4,0.5
     fmul %r3,%r4,%r3
+    blr
 
 fisneg:
     li %r4,0

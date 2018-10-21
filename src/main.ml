@@ -72,6 +72,7 @@ let libs =
   List.map
     (fun x -> libpath ^ x)
     [ "lib.st"
+    ;  "io.st"
     ; "invsqrt.st"
     ; "trigonometric_kernels.st"
     ; "trigonometric.st"
