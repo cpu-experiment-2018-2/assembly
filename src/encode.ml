@@ -57,10 +57,14 @@ let binary_encode keta number =
   in
   Bytes.to_string str
 
-let encode env e =
+let rec encode env e =
   match e with
   | Label s -> []
   | LocalLabel s -> []
+  | LIL (t,label) -> encode env (match List.find_opt (fun (x, y) -> label = x) env with
+            | Some (x, y) -> LI(t,y)
+            | None -> failwith label 
+  )
   | _ ->
       let op = opcode e in
       let t =

@@ -29,6 +29,7 @@ exception ParseError
 %token FDIV
 %token MR
 %token LI
+%token LIL
 %token LIS
 %token FLI
 %token STORE
@@ -89,6 +90,7 @@ order:
     | LIS reg COMMA INT { LIS($2,$4)}
     | FLI reg COMMA FLOAT { FLI($2,$4)}
     | LI reg COMMA INT { LI($2,$4)}
+    | LIL reg COMMA IDENT { LIL($2,$4)}
     | LOAD reg COMMA reg COMMA INT { LOAD($2,$4,$6)}
     | STORE reg COMMA reg COMMA INT { STORE($2,$4,$6)}
     | CMPDI reg COMMA INT { CMPDI($2,$4)}

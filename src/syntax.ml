@@ -22,6 +22,7 @@ type t =
   | LI of int * int
   | FLI of int * float
   | LIS of int * int
+  | LIL of int * string
   | STORE of int * int * int
   | LOAD of int * int * int
   | CMPDI of int * int
@@ -40,6 +41,7 @@ let apply f s =
   match s with
   | Label s -> Label (f s)
   | LocalLabel s -> LocalLabel (f s)
+  | LIL (t,s) -> LIL (t, f s)
   | BEQ s -> BEQ (f s)
   | BLE s -> BLE (f s)
   | BL s -> BL (f s)

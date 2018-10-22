@@ -84,6 +84,7 @@ rule token = parse
 | "blr"  {BLR}
 | "mr"  {MR}
 | "inc"  {INC}
+| "lil"  {LIL}
 | "dec"  {DEC}
 | "bl"  {BL}
 | "end"  {END}
