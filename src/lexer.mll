@@ -81,6 +81,7 @@ rule token = parse
 | "cmpdi"  {CMPDI}
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
+| "blrr"  {BLRR}
 | "blr"  {BLR}
 | "mr"  {MR}
 | "inc"  {INC}

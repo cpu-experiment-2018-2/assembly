@@ -42,6 +42,7 @@ exception ParseError
 %token BEQ
 %token BLE
 %token BLR
+%token BLRR
 %token END
 %token INLL
 %token INLH
@@ -104,6 +105,7 @@ order:
     | BLE IDENT { BLE($2)}
     | BL IDENT { BL($2)}
     | JUMP IDENT {JUMP($2)}
+    | BLRR reg { BLRR($2)}
     | BLR { BLR}
     | END { END}
     | INLL reg { IN($2,LL)}
