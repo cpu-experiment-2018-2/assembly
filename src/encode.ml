@@ -41,6 +41,7 @@ let opcode e =
   | OUT (_, x) -> "110" ^ get_pos_out x
   | END -> "111000"
   | BLR -> "100001"
+  | BLRR _ -> "100011"
   | BL _ -> "100010"
   | CMPD _ -> "101010"
   | CMPDI _ -> failwith "yet implemented"
@@ -92,7 +93,7 @@ let rec encode env e =
           | LI (t, d) -> (t lsl 21) lor d
           | LIS (t, d) -> (t lsl 21) lor d
           | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)
-          | IN (a, _) | OUT (a, _) -> a lsl 21
+          | BLRR(a) | IN (a, _) | OUT (a, _) -> a lsl 21
           | Label _ -> failwith "label is unreachble"
           | BLR _ -> 0
           | END _ -> 0

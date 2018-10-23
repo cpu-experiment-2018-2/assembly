@@ -34,6 +34,7 @@ type t =
   | IN of int * pos
   | OUT of int * pos
   | BLR
+  | BLRR of int
   | END
 [@@deriving show]
 
