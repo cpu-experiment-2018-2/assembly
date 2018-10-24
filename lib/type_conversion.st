@@ -1,22 +1,29 @@
 floor:
 (* マイナスはまだバグってるので注意 *)
-    mr %r30,%lr
-    mr %r29,%r3
 
+    mr %r25,%lr
+    mr %r28,%r3
+    fli %r5, 0.5
+    fsub %r3,%r3,%r5
 
     bl int_of_float 
     bl float_of_int 
+    mr %lr,%r25
+    blr
 
-    cmpd %r3,%r29
+
+(*
+    cmpd %r3,%r28
     ble @@ok
     fli %r4,1.0
     fsub %r3,%r3,%r4
-    cmpd %r3,%r29
+    cmpd %r3,%r28
     ble @@ok
     fsub %r3,%r3,%r4
 @@ok:
-    mr %lr,%r30
+    mr %lr,%r25
     blr
+    *)
 
 
 int_of_float:

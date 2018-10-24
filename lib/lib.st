@@ -20,6 +20,13 @@ read_float:
     inlh %r3
     inll %r3
     blr
+truncate:
+    mr %r20,%lr
+    bl floor 
+    bl int_of_float
+    mr %lr,%r20
+    blr
+
 
 div2:
     srawi %r3,%r3, 1
@@ -27,6 +34,20 @@ div2:
     
 fsqr:
     jump sqrt
+
+abs:
+    jump fabs
+
+abs_float:
+    jump fabs
+
+fabs:
+    li %r4,0
+    cmpd %r4,%r3
+    ble @@fabsplus
+    fsub %r3,%r4,%r3
+@@fabsplus:
+    blr
     
 
 fhalf:
@@ -83,6 +104,16 @@ not:
 @@not.end:
     blr
 
+eq:
+    cmpd %r3,%r4
+    beq @@leq.true
+    li %r3,0
+    jump @@leq.end
+@@leq.true:
+    li %r3,1
+@@leq.end:
+    blr
+ 
 leq:
     cmpd %r3,%r4
     ble @@leq.true
