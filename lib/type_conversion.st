@@ -27,6 +27,8 @@ floor:
 
 
 int_of_float:
+    (*fli %r7, 0.5
+    fsub %r3,%r3,%r7*)
     li %r5,0
     li %r6,0
     cmpd %r5,%r3
