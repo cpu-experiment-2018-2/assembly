@@ -131,16 +131,17 @@ print_char : (* Asm.FunCall Global *)
 	outll %r3 (* Global *)
 	blr
 
-fless : (* Asm.FunCall Global *)
-    jump leq
 
 fless : (* Global Fun  ? somewhere  *)
+    cmpd %r3,%r4
+    beq @@flesseq
 	addi %fp,%sp,0 (*  ? somewhere  *)
 	store %lr,%fp, 1 (*  ? somewhere  *)
 	addi %sp,%sp,9 (*  ? somewhere  *)
 	store %fp,%sp, 0 (*  ? somewhere  *)
 	store %r4,%fp, 2 (*  ? somewhere  *)
 	store %r3,%fp, 3 (*  ? somewhere  *)
+    fsub %r4,%r4,%r15
 	bl fisneg (* at line 2 *)
 	addi %r28,%r3,0 (*  ? somewhere  *)
 	li %r27,0 (* at line 2 *)
@@ -196,6 +197,9 @@ fless : (* Global Fun  ? somewhere  *)
 	addi %sp,%fp,0 (*  ? somewhere  *)
 	load %fp, %fp ,0 (*  ? somewhere  *)
 	blr
+@@flesseq:
+    li %r3, 0
+    blr
 
 Obj.magic:
     blr

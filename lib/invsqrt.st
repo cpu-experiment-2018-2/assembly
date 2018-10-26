@@ -29,11 +29,11 @@ invsqrt:
 
     blr
 sqrt:
-    mr %r30,%lr
+    mr %r25,%lr
     bl invsqrt
     fli %r4,1.0
     fdiv %r3,%r4,%r3
-    mr %lr,%r30
+    mr %lr,%r25
     blr
 
 

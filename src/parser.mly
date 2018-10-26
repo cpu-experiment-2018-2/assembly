@@ -19,16 +19,14 @@ exception ParseError
 %token MUL
 %token DIVI
 %token DIV
-%token FADDI 
 %token FADD
-%token FSUBI 
 %token FSUB
-%token FMULI 
 %token FMUL
-%token FDIVI
 %token FDIV
 %token MR
 %token LI
+%token BLT
+%token CMPF 
 %token LIL
 %token LIS
 %token FLI
@@ -38,6 +36,7 @@ exception ParseError
 %token FTOI
 %token CMPDI
 %token CMPD
+%token CMPF
 %token BL
 %token BEQ
 %token BLE
@@ -96,13 +95,14 @@ order:
     | STORE reg COMMA reg COMMA INT { STORE($2,$4,$6)}
     | CMPDI reg COMMA INT { CMPDI($2,$4)}
     | CMPD reg COMMA reg { CMPD($2,$4)}
-    | FTOI reg COMMA reg { CMPD($2,$4)}
+    | CMPF reg COMMA reg { CMPF($2,$4)}
     | INC reg { ADDI($2,$2,1)}
     | MR reg COMMA reg { ADDI($2,$4,0)}
     | DEC reg { SUBI($2,$2,1)}
     | ITOF reg COMMA reg { CMPD($2,$4)}
     | BEQ IDENT { BEQ($2)}
     | BLE IDENT { BLE($2)}
+    | BLT IDENT { BLT($2)}
     | BL IDENT { BL($2)}
     | JUMP IDENT {JUMP($2)}
     | BLRR reg { BLRR($2)}

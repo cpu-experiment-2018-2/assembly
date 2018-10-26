@@ -36,7 +36,7 @@ let rec print_int x =
 
 in
 let rec print_float_plus x = 
-    if x >= 4000.0 then
+    if fless x 4000.0 then
         (
         print_int_plus (int_of_float x) true;print_char 46
         )
@@ -51,7 +51,7 @@ let rec print_float_plus x =
 in
 
 let rec print_float x = 
-    if x >= 0.0 then
+    if fless 0.0 x  then
         print_float_plus x 
     else 
         (print_char 45;

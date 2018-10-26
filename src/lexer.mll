@@ -73,14 +73,14 @@ rule token = parse
 | "outuh"  {OUTUH}
 | "lis"  {LIS}
 | "fli"  {FLI}
-| "ftoi"  {FTOI}
-| "itof"  {ITOF}
 | "li"  {LI}
 | "store"  {STORE}
 | "load"  {LOAD}
+| "cmpf"  {CMPF}
 | "cmpdi"  {CMPDI}
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
+| "blt"  {BLT}
 | "blrr"  {BLRR}
 | "blr"  {BLR}
 | "mr"  {MR}

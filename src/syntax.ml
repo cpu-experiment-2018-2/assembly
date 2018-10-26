@@ -27,8 +27,10 @@ type t =
   | LOAD of int * int * int
   | CMPDI of int * int
   | CMPD of int * int
+  | CMPF of int * int
   | BEQ of string
   | BLE of string
+  | BLT of string
   | JUMP of string
   | BL of string
   | IN of int * pos
@@ -42,10 +44,11 @@ let apply f s =
   match s with
   | Label s -> Label (f s)
   | LocalLabel s -> LocalLabel (f s)
-  | LIL (t,s) -> LIL (t, f s)
+  | LIL (t, s) -> LIL (t, f s)
   | BEQ s -> BEQ (f s)
   | BLE s -> BLE (f s)
   | BL s -> BL (f s)
+  | BLT s -> BLT (f s)
   | JUMP s -> JUMP (f s)
   | _ -> s
 

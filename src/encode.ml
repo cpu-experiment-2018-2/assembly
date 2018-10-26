@@ -42,6 +42,8 @@ let opcode e =
   | END -> "111000"
   | BLR -> "100001"
   | BLRR _ -> "100011"
+  | BLT _ -> "101100"
+  | CMPF _ -> "101011"
   | BL _ -> "100010"
   | CMPD _ -> "101010"
   | CMPDI _ -> failwith "yet implemented"
@@ -62,10 +64,11 @@ let rec encode env e =
   match e with
   | Label s -> []
   | LocalLabel s -> []
-  | LIL (t,label) -> encode env (match List.find_opt (fun (x, y) -> label = x) env with
-            | Some (x, y) -> LI(t,y)
-            | None -> failwith label 
-  )
+  | LIL (t, label) ->
+      encode env
+        ( match List.find_opt (fun (x, y) -> label = x) env with
+        | Some (x, y) -> LI (t, y)
+        | None -> failwith label )
   | _ ->
       let op = opcode e in
       let t =
@@ -84,7 +87,7 @@ let rec encode env e =
            |AND (t, a, b)
            |OR (t, a, b) ->
               (t lsl 21) lor (a lsl 16) lor (b lsl 11)
-          | JUMP label | BEQ label | BLE label | BL label -> (
+          | JUMP label | BEQ label | BLE label | BL label | BLT label -> (
             match List.find_opt (fun (x, y) -> label = x) env with
             | Some (x, y) -> y
             | None -> failwith label )
@@ -92,8 +95,8 @@ let rec encode env e =
               (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
           | LIS (t, d) -> (t lsl 21) lor d
-          | CMPD (a, b) -> (a lsl 21) lor (b lsl 16)
-          | BLRR(a) | IN (a, _) | OUT (a, _) -> a lsl 21
+          | CMPD (a, b) | CMPF (a, b) -> (a lsl 21) lor (b lsl 16)
+          | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
           | Label _ -> failwith "label is unreachble"
           | BLR _ -> 0
           | END _ -> 0
