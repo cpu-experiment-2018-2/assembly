@@ -7,9 +7,8 @@ reduction:
     add %r7,%r7,%r6 
     fsub %r7,%r7,%r6
     fmul %r7, %r7,%r4 
-    subi %r7,%r7,1 
-    cmpd %r3,%r7
-    ble @@reduction_end
+    cmpf %r3,%r7
+    blt @@reduction_end
     inc %r5
     jump  @@reduction_loop
 @@reduction_end:

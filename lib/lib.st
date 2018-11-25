@@ -131,81 +131,20 @@ print_char : (* Asm.FunCall Global *)
 	outll %r3 (* Global *)
 	blr
 
-
-fless : (* Global Fun  ? somewhere  *)
-    cmpd %r3,%r4
-    beq @@flesseq
-	addi %fp,%sp,0 (*  ? somewhere  *)
-	store %lr,%fp, 1 (*  ? somewhere  *)
-	addi %sp,%sp,9 (*  ? somewhere  *)
-	store %fp,%sp, 0 (*  ? somewhere  *)
-	store %r4,%fp, 2 (*  ? somewhere  *)
-	store %r3,%fp, 3 (*  ? somewhere  *)
-    fsub %r4,%r4,%r15
-	bl fisneg (* at line 2 *)
-	addi %r28,%r3,0 (*  ? somewhere  *)
-	li %r27,0 (* at line 2 *)
-	store %r28,%fp, 4 (*  ? somewhere  *)
-	store %r27,%fp, 5 (*  ? somewhere  *)
-	cmpd %r28,%r27(* at line 2 *)
-	beq @@label80.if.true (* at line 2 *)
-@@label80.if.false : (* Local Label at line 2 *)
-	load %r3, %fp ,2 (*  ? somewhere  *)
-	bl fisneg (* at line 2 *)
-	addi %r26,%r3,0 (*  ? somewhere  *)
-	li %r28,0 (* at line 2 *)
-	store %r28,%fp, 6 (*  ? somewhere  *)
-	store %r26,%fp, 7 (*  ? somewhere  *)
-	cmpd %r26,%r28(* at line 2 *)
-	beq @@label84.if.true (* at line 2 *)
-@@label84.if.false : (* Local Label at line 2 *)
-	load %r3, %fp ,2 (*  ? somewhere  *)
-	bl fneg (* at line 2 *)
-	addi %r27,%r3,0 (*  ? somewhere  *)
-	store %r27,%fp, 8 (*  ? somewhere  *)
-	load %r3, %fp ,3 (*  ? somewhere  *)
-	bl fneg (* at line 2 *)
-	addi %r4,%r3,0 (*  ? somewhere  *)
-	load %r3, %fp ,8 (*  ? somewhere  *)
-	bl leq (* at line 2 *)
-	addi %r3,%r3,0 (*  ? somewhere  *)
-	jump @@label85 (* at line 2 *)
-@@label84.if.true : (* Local Label at line 2 *)
-	li %r3,1 (* at line 2 *)
-@@label85 : (* Local Label at line 2 *)
-	jump @@label81 (* at line 2 *)
-@@label80.if.true : (* Local Label at line 2 *)
-	load %r3, %fp ,2 (*  ? somewhere  *)
-	bl fisneg (* at line 2 *)
-	addi %r26,%r3,0 (*  ? somewhere  *)
-	li %r28,0 (* at line 2 *)
-	store %r28,%fp, 6 (*  ? somewhere  *)
-	store %r26,%fp, 7 (*  ? somewhere  *)
-	cmpd %r26,%r28(* at line 2 *)
-	beq @@label82.if.true (* at line 2 *)
-@@label82.if.false : (* Local Label at line 2 *)
-	li %r3,0 (* at line 2 *)
-	jump @@label83 (* at line 2 *)
-@@label82.if.true : (* Local Label at line 2 *)
-	load %r4, %fp ,2 (*  ? somewhere  *)
-	load %r3, %fp ,3 (*  ? somewhere  *)
-	bl leq (* at line 2 *)
-	addi %r3,%r3,0 (*  ? somewhere  *)
-@@label83 : (* Local Label at line 2 *)
-@@label81 : (* Local Label at line 2 *)
-	load %lr, %fp ,1 (*  ? somewhere  *)
-	addi %sp,%fp,0 (*  ? somewhere  *)
-	load %fp, %fp ,0 (*  ? somewhere  *)
-	blr
-@@flesseq:
-    li %r3, 0
-    blr
-
 Obj.magic:
     blr
 print_newline:
     li %r3, 10
     outll %r3
+    blr
+
+fless:
+    cmpf %r3,%r4
+    blt @@fless.true
+    li %r3, 0
+    blr
+@@fless.true:
+    li %r3, 1
     blr
 
 alloc:
