@@ -52,10 +52,7 @@ rule token = parse
 | "add"  {ADD}
 | "subi"  {SUBI}
 | "sub"  {SUB}
-| "muli"  {MULI}
-| "mul"  {MUL}
-| "divi"  {DIVI}
-| "div"  {DIV}
+| "nop" {NOP}
 | "fadd"  {FADD}
 | "fsub"  {FSUB}
 | "fmul"  {FMUL}

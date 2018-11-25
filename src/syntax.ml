@@ -4,12 +4,8 @@ type t =
   | Label of string
   | LocalLabel of string
   | ADDI of int * int * int
-  | MULI of int * int * int
-  | DIVI of int * int * int
   | SUBI of int * int * int
   | ADD of int * int * int
-  | MUL of int * int * int
-  | DIV of int * int * int
   | SUB of int * int * int
   | FADD of int * int * int
   | FMUL of int * int * int
@@ -37,6 +33,7 @@ type t =
   | OUT of int * pos
   | BLR
   | BLRR of int
+  | NOP
   | END
 [@@deriving show]
 

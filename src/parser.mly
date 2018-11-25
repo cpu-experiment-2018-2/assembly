@@ -8,6 +8,7 @@ exception ParseError
 %token COMMA
 %token EOF
 %token ADDI 
+%token NOP
 %token INC
 %token DEC
 %token ADD
@@ -15,10 +16,6 @@ exception ParseError
 %token SUB
 %token SLAWI
 %token SRAWI
-%token MULI 
-%token MUL
-%token DIVI
-%token DIV
 %token FADD
 %token FSUB
 %token FMUL
@@ -26,7 +23,6 @@ exception ParseError
 %token MR
 %token LI
 %token BLT
-%token CMPF 
 %token LIL
 %token LIS
 %token FLI
@@ -76,13 +72,9 @@ order:
         )
         }
     | ADDI reg COMMA reg COMMA INT { ADDI($2,$4,$6) }
-    | MULI reg COMMA reg COMMA INT { MULI($2,$4,$6) }
     | SUBI reg COMMA reg COMMA INT { SUBI($2,$4,$6) }
-    | DIVI reg COMMA reg COMMA INT { DIVI($2,$4,$6) }
     | ADD reg COMMA reg COMMA reg { ADD($2,$4,$6) }
-    | MUL reg COMMA reg COMMA reg { MUL($2,$4,$6) }
     | SUB reg COMMA reg COMMA reg { SUB($2,$4,$6) }
-    | DIV reg COMMA reg COMMA reg { DIV($2,$4,$6) }
     | FADD reg COMMA reg COMMA reg { FADD($2,$4,$6) }
     | FMUL reg COMMA reg COMMA reg { FMUL($2,$4,$6) }
     | FSUB reg COMMA reg COMMA reg { FSUB($2,$4,$6) }
@@ -112,6 +104,7 @@ order:
     | INLH reg { IN($2,LH)}
     | INUL reg { IN($2,UL)}
     | INUH reg { IN($2,UH)}
+    | NOP { NOP} 
     | OUTLL reg { OUT($2,LL)}
     | OUTLH reg { OUT($2,LH)}
     | OUTUL reg { OUT($2,UL)}

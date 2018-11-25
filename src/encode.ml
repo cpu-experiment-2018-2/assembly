@@ -18,37 +18,34 @@ let opcode e =
   | LocalLabel _ -> failwith "LocalLabel doesn't appear in bin"
   | ADDI _ -> "000000"
   | SUBI _ -> "000001"
-  | MULI _ -> "000010"
-  | DIVI _ -> "000011"
-  | ADD _ -> "001000"
-  | SUB _ -> "001001"
-  | MUL _ -> "001010"
-  | DIV _ -> "001011"
-  | FADD _ -> "001100"
-  | FSUB _ -> "001101"
-  | FMUL _ -> "001110"
-  | FDIV _ -> "001111"
-  | SRAWI _ -> "010010"
-  | SLAWI _ -> "010011"
-  | LOAD _ -> "011000"
-  | STORE _ -> "011001"
-  | JUMP _ -> "100000"
-  | BEQ _ -> "101000"
-  | BLE _ -> "101001"
+  | ADD _ -> "000010"
+  | SUB _ -> "000011"
+  | FADD _ -> "001000"
+  | FSUB _ -> "001001"
+  | FMUL _ -> "001010"
+  | FDIV _ -> "001011"
+  | SRAWI _ -> "000100"
+  | SLAWI _ -> "000101"
+  | LOAD _ -> "010000"
+  | STORE _ -> "010001"
+  | JUMP _ -> "011000"
+  | BEQ _ -> "100000"
+  | BLE _ -> "100001"
+  | BLT _ -> "100010"
   | AND _ -> "010000"
   | OR _ -> "010001"
-  | IN (_, x) -> "110" ^ get_pos_in x
-  | OUT (_, x) -> "110" ^ get_pos_out x
+  | IN (_, x) -> "101" ^ get_pos_in x
+  | OUT (_, x) -> "101" ^ get_pos_out x
   | END -> "111000"
-  | BLR -> "100001"
-  | BLRR _ -> "100011"
-  | BLT _ -> "101100"
-  | CMPF _ -> "101011"
-  | BL _ -> "100010"
-  | CMPD _ -> "101010"
-  | CMPDI _ -> failwith "yet implemented"
-  | LI _ -> "011010"
-  | LIS _ -> "011011"
+  | BLR -> "011001"
+  | BL _ -> "011010"
+  | BLRR _ -> "011011"
+  | CMPF _ -> "100100"
+  | CMPD _ -> "100011"
+  | CMPDI _ -> "100101"
+  | LI _ -> "010010"
+  | LIS _ -> "010011"
+  | NOP -> "111000"
 
 let binary_encode keta number =
   let str = Bytes.make keta '0' in
@@ -74,12 +71,9 @@ let rec encode env e =
       let t =
         binary_encode 26
           ( match e with
-          | ADDI (t, s, d) | SUBI (t, s, d) | MULI (t, s, d) | DIVI (t, s, d) ->
-              (t lsl 21) lor (s lsl 16) lor d
+          | ADDI (t, s, d) | SUBI (t, s, d) -> (t lsl 21) lor (s lsl 16) lor d
           | ADD (t, a, b)
            |SUB (t, a, b)
-           |MUL (t, a, b)
-           |DIV (t, a, b)
            |FADD (t, a, b)
            |FSUB (t, a, b)
            |FMUL (t, a, b)
