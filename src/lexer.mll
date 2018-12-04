@@ -14,6 +14,10 @@ rule token = parse
     Lexing.new_line lexbuf;  
     token lexbuf
     }
+| "#" {
+    comment2 lexbuf;
+    token lexbuf
+}
 | "(*"
     { comment lexbuf; 
       token lexbuf }
@@ -110,3 +114,16 @@ and comment = parse
 }
 | _
     { comment lexbuf }
+
+and comment2 = parse
+| "#" 
+    {comment2 lexbuf;
+     comment2 lexbuf  }
+| "\n"
+    { 
+    Lexing.new_line lexbuf
+    }
+| eof
+    { Format.eprintf "warning: unterminated comment@." }
+| _
+    { comment2 lexbuf }

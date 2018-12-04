@@ -88,6 +88,7 @@ let rec encode env e =
           | LOAD (t, a, d) | STORE (t, a, d) | SLAWI (t, a, d) | SRAWI (t, a, d) ->
               (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
+          | CMPDI (t, d) -> (t lsl 21) lor d
           | LIS (t, d) -> (t lsl 21) lor d
           | CMPD (a, b) | CMPF (a, b) -> (a lsl 21) lor (b lsl 16)
           | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
