@@ -30,7 +30,7 @@ rule token = parse
 {
     PERCENTINT(2)
 }
-| "%lr"{
+| "%lr" {
     PERCENTINT(31)
 }
 | "%r"digit+{
