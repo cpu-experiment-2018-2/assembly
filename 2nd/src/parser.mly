@@ -23,6 +23,9 @@ exception ParseError
 %token MR
 %token LI
 %token BLT
+%token BGT
+%token BGE
+%token BNE
 %token LIL
 %token LIS
 %token LIW
@@ -93,10 +96,16 @@ order:
     | INC reg { ADDI($2,$2,1)}
     | MR reg COMMA reg { ADDI($2,$4,0)}
     | DEC reg { SUBI($2,$2,1)}
-    | ITOF reg COMMA reg { CMPD($2,$4)}
+    | ITOF reg COMMA reg { ITOF($2,$4)}
+    | FTOI reg COMMA reg { FTOI($2,$4)}
     | BEQ IDENT { BEQ($2)}
+    | BNE IDENT { BNE($2)}
+
     | BLE IDENT { BLE($2)}
     | BLT IDENT { BLT($2)}
+    | BGE IDENT { BGE($2)}
+    | BGT IDENT { BGT($2)}
+
     | BL IDENT { BL($2)}
     | JUMP IDENT {JUMP($2)}
     | BLRR reg { BLRR($2)}

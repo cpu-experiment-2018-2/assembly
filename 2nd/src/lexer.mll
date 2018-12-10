@@ -14,7 +14,7 @@ rule token = parse
     Lexing.new_line lexbuf;  
     token lexbuf
     }
-| "#" {
+| "#" |".text"| ".file"|".globl"|".type"|".type"|".p2align"|".section" | ".size"{
     comment2 lexbuf;
     token lexbuf
 }
@@ -83,12 +83,19 @@ rule token = parse
 | "cmpd"  {CMPD}
 | "beq"  {BEQ}
 | "blt"  {BLT}
+| "bne"  {BNE}
+| "bgt"  {BGT}
+| "bge"  {BGE}
+
+
 | "blrr"  {BLRR}
 | "blr"  {BLR}
 | "mr"  {MR}
 | "inc"  {INC}
 | "lil"  {LIL}
 | "dec"  {DEC}
+| "itof"  {ITOF}
+| "ftoi"  {FTOI}
 | "bl"  {BL}
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}
