@@ -14,13 +14,14 @@ rule token = parse
     Lexing.new_line lexbuf;  
     token lexbuf
     }
-| "#" |".text"| ".file"|".globl"|".type"|".type"|".p2align"|".section" | ".size"{
+| "#" |".text"| ".file"|".globl"|".type"|".type"|".p2align"|".section" | ".size"|".ident"{
     comment2 lexbuf;
     token lexbuf
 }
 | "(*"
     { comment lexbuf; 
       token lexbuf }
+
 | "%sp"
 {
     PERCENTINT(1)
@@ -92,10 +93,14 @@ rule token = parse
 | "blr"  {BLR}
 | "mr"  {MR}
 | "inc"  {INC}
+| "and"  {AND}
+| "or"  {OR}
+| "xor"  {XOR}
 | "lil"  {LIL}
 | "dec"  {DEC}
 | "itof"  {ITOF}
 | "ftoi"  {FTOI}
+| "fsqrt"  {FSQRT}
 | "bl"  {BL}
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}
@@ -125,8 +130,8 @@ and comment = parse
 
 and comment2 = parse
 | "#" 
-    {comment2 lexbuf;
-     comment2 lexbuf  }
+    {comment2 lexbuf
+      }
 | "\n"
     { 
     Lexing.new_line lexbuf

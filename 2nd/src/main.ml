@@ -29,13 +29,50 @@ let rec extend x =
       ( match x with
       | LI (var, x) ->
           if x >= 1 lsl 16 then
-            [LIW (var, x)]
+            [LI (var, x land ((1 lsl 16) - 1)); LIS (var, x lsr 16)]
           else if x < 0 then
-            [LIW (var, x)]
+            [ LI (var, x land ((1 lsl 16) - 1))
+            ; LIS (var, (x lsr 16) land ((1 lsl 16) - 1)) ]
           else [LI (var, x)]
       | FLI (x, f) -> extend [LI (x, getint f)]
+      | LIW (x, f) -> extend [LI (x, f)]
+
       | _ -> [x] )
       @ extend y
+
+(* let rec extend x = *)
+(*   match x with *)
+(*   | [] -> [] *)
+(*   | x :: y -> *)
+(*       ( match x with *)
+(*       | LI (var, x) -> *)
+(*           if x >= 1 lsl 16 then *)
+(*             [LI(var,x land ((1 lsr 16)-1));LIS (var, x lsr 16);] *)
+(*           else if x < 0 then *)
+(*             [LI(var,x land ((1 lsr 16)-1));LIS (var, x lsr 16);] *)
+(*           else [LI (var, x)] *)
+(*       | FLI (x, f) -> extend [LI (x, getint f)] *)
+(*       | LIW (x, f) -> extend [LI (x, f)] *)
+(*       | _ -> [x] ) *)
+(*       @ extend y *)
+
+(* let rec extend x = *)
+(*   match x with *)
+(*   | [] -> [] *)
+(*   | x :: y -> *)
+(*       ( match x with *)
+(*       | LI (var, x) -> *)
+(*           if x >= 1 lsl 16 then *)
+(*             [LIW (var, x)] *)
+(*           else if x < 0 then *)
+(*             [LIW (var, x)] *)
+(*           else [LI (var, x)] *)
+(*       | FLI (x, f) -> extend [LI (x, getint f)] *)
+(*       | LIW (x, f) -> extend [LI (x, f)] *)
+(*       | _ -> [x] ) *)
+(*       @ extend y *)
+(*  *)
+
 
 let lexbuf p =
   let p = Parser.exp Lexer.token p in
@@ -48,11 +85,12 @@ let encode p filename =
   let _ =
     List.iter
       (fun x ->
+          let _ = 
         match x with
         | LocalLabel x | Label x -> Printf.fprintf oc "%s: \n" x
-        | _ ->
+        | _ -> counter := !counter + 1  in 
             Printf.fprintf oc "%d: %s\n" !counter (Syntax.show x) ;
-            counter := !counter + 1 )
+            )
       p
   in
   Encode.f p
@@ -70,12 +108,9 @@ let libpath =
 let libs =
   List.map
     (fun x -> libpath ^ x)
-    [ "lib.st"
-    ; "io.st"
-    ; "invsqrt.st"
-    ; "trigonometric_kernels.st"
-    ; "trigonometric.st"
-    ; "type_conversion.st" ]
+    [ "lib.s"
+    ; "trigonometric_kernels.s"
+    ;  ]
 
 let _ =
   let filename = Sys.argv.(1) in
@@ -97,7 +132,7 @@ let _ =
   in
   let p = List.concat (fst libs) in
   (* 暇なとき実装する *)
-  let p = JUMP "init" :: p in
+  let p = JUMP "main" :: p in
   let p = encode p filename in
   if arg "-txt" Sys.argv then
     let oname = filename ^ ".txt" in

@@ -11,6 +11,10 @@ exception ParseError
 %token NOP
 %token INC
 %token DEC
+%token AND
+%token OR
+%token XOR
+%token FSQRT
 %token ADD
 %token SUBI 
 %token SUB
@@ -77,6 +81,10 @@ order:
         }
     | ADDI reg COMMA reg COMMA INT { if $6 >= 0 then ADDI($2,$4,$6) else  SUBI($2,$4,-$6)}
     | SUBI reg COMMA reg COMMA INT { if $6 >= 0 then SUBI($2,$4,$6) else  ADDI($2,$4,-$6)}
+    | AND reg COMMA reg COMMA reg { AND($2,$4,$6) }
+    | OR reg COMMA reg COMMA reg { OR($2,$4,$6) }
+    | XOR reg COMMA reg COMMA reg { XOR($2,$4,$6) }
+    | FSQRT reg COMMA reg { FSQRT($2,$4) }
     | ADD reg COMMA reg COMMA reg { ADD($2,$4,$6) }
     | SUB reg COMMA reg COMMA reg { SUB($2,$4,$6) }
     | FADD reg COMMA reg COMMA reg { FADD($2,$4,$6) }

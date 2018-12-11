@@ -8,14 +8,19 @@ type t =
   | ADD of int * int * int
   | SUB of int * int * int
   | FADD of int * int * int
+  | FSUB of int * int * int
   | FMUL of int * int * int
   | FDIV of int * int * int
-  | FSUB of int * int * int
+
   | AND of int * int * int
   | OR of int * int * int
+  | XOR of int * int * int
   | SRAWI of int * int * int
   | SLAWI of int * int * int
   | LI of int * int
+  | FTOI of int * int
+  | FSQRT of int * int
+  | ITOF of int * int
   | FLI of int * float
   | LIS of int * int
   | LIL of int * string
@@ -28,6 +33,9 @@ type t =
   | BEQ of string
   | BLE of string
   | BLT of string
+  | BNE of string
+  | BGE of string
+  | BGT of string
   | JUMP of string
   | BL of string
   | IN of int * pos
