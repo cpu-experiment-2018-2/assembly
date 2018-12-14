@@ -20,6 +20,7 @@ type t =
   | LI of int * int
   | FTOI of int * int
   | FSQRT of int * int
+  | FFLOOR of int * int
   | ITOF of int * int
   | FLI of int * float
   | LIS of int * int

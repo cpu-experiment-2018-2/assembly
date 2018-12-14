@@ -36,7 +36,7 @@ let rec extend x =
           else [LI (var, x)]
       | FLI (x, f) -> extend [LI (x, getint f)]
       | LIW (x, f) -> extend [LI (x, f)]
-
+      (* | FFLOOR(t,s) -> [ FTOI(t,s); ITOF(t,t) ] *)
       | _ -> [x] )
       @ extend y
 
@@ -132,7 +132,7 @@ let _ =
   in
   let p = List.concat (fst libs) in
   (* 暇なとき実装する *)
-  let p = JUMP "main" :: p in
+  let p = LI (0,0)::LI(1,200000)::LI(2,200000)::(BL "main" ):: END :: p in
   let p = encode p filename in
   if arg "-txt" Sys.argv then
     let oname = filename ^ ".txt" in

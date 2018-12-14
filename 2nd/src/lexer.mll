@@ -101,6 +101,8 @@ rule token = parse
 | "itof"  {ITOF}
 | "ftoi"  {FTOI}
 | "fsqrt"  {FSQRT}
+| "ffloor"  {FFLOOR}
+
 | "bl"  {BL}
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}

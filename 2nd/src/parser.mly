@@ -6,6 +6,7 @@ exception ParseError
 %token <int> INT
 %token <float> FLOAT
 %token COMMA
+%token FFLOOR
 %token EOF
 %token ADDI 
 %token NOP
@@ -85,6 +86,7 @@ order:
     | OR reg COMMA reg COMMA reg { OR($2,$4,$6) }
     | XOR reg COMMA reg COMMA reg { XOR($2,$4,$6) }
     | FSQRT reg COMMA reg { FSQRT($2,$4) }
+    | FFLOOR reg COMMA reg { FFLOOR($2,$4) }
     | ADD reg COMMA reg COMMA reg { ADD($2,$4,$6) }
     | SUB reg COMMA reg COMMA reg { SUB($2,$4,$6) }
     | FADD reg COMMA reg COMMA reg { FADD($2,$4,$6) }

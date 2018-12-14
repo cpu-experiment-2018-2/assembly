@@ -35,6 +35,8 @@ let opcode e =
   | FTOI _ -> "001100"
   | ITOF _ -> "001101"
   | FSQRT _ -> "001110"
+  | FFLOOR _ -> "001111"
+
   | LOAD _ -> "010000"
   | STORE _ -> "010001"
   | LI _ -> "010010"
@@ -112,12 +114,13 @@ let rec encode env e =
           | LOAD (t, a, d) | STORE (t, a, d) | SLAWI (t, a, d) | SRAWI (t, a, d) ->
               (t lsl 21) lor (a lsl 16) lor d
           | LI (t, d) -> (t lsl 21) lor d
-          | ITOF (t,d) -> (t lsl 21) lor (d lsl 16)
-          | FTOI (t,d) -> (t lsl 21) lor (d lsl 16)
+          | ITOF (t,d) 
+          | FTOI (t,d)
+          | FFLOOR(t,d) 
           | FSQRT (t,d) -> (t lsl 21) lor (d lsl 16)
-          | CMPDI (t, d) -> (t lsl 21) lor d
+          | CMPDI (t, d) -> (t lsl 16) lor ( d land (0xffff))
           | LIS (t, d) -> (t lsl 21) lor d
-          | CMPD (a, b) | CMPF (a, b) -> (a lsl 21) lor (b lsl 16)
+          | CMPD (a, b) | CMPF (a, b) -> (a lsl 16) lor (b lsl 11)
           | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
           | Label _ -> failwith "label is unreachble"
           | BLR _ -> 0
