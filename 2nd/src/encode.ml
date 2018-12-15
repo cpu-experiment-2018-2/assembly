@@ -96,7 +96,7 @@ let rec encode env e =
           | _ -> (
         binary_encode 26
           ( match e with
-          | ADDI (t, s, d) | SUBI (t, s, d) -> (t lsl 21) lor (s lsl 16) lor d
+          | ADDI (t, s, d) | SUBI (t, s, d) -> (t lsl 21) lor (s lsl 16) lor (d land (0xffff))
           | ADD (t, a, b)
            |SUB (t, a, b)
            |FADD (t, a, b)
@@ -112,14 +112,14 @@ let rec encode env e =
             | Some (x, y) -> y
             | None -> failwith label )
           | LOAD (t, a, d) | STORE (t, a, d) | SLAWI (t, a, d) | SRAWI (t, a, d) ->
-              (t lsl 21) lor (a lsl 16) lor d
-          | LI (t, d) -> (t lsl 21) lor d
+              (t lsl 21) lor (a lsl 16) lor (d land (0xffff))
+          | LI (t, d) -> (t lsl 21) lor (d land (0xffff))
           | ITOF (t,d) 
           | FTOI (t,d)
           | FFLOOR(t,d) 
           | FSQRT (t,d) -> (t lsl 21) lor (d lsl 16)
           | CMPDI (t, d) -> (t lsl 16) lor ( d land (0xffff))
-          | LIS (t, d) -> (t lsl 21) lor d
+          | LIS (t, d) -> (t lsl 21) lor (d land (0xffff))
           | CMPD (a, b) | CMPF (a, b) -> (a lsl 16) lor (b lsl 11)
           | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
           | Label _ -> failwith "label is unreachble"
