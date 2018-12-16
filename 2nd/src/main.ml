@@ -36,6 +36,7 @@ let rec extend x =
           else [LI (var, x)]
       | FLI (x, f) -> extend [LI (x, getint f)]
       | LIW (x, f) -> extend [LI (x, f)]
+      | LocalLabel(s) -> [Label(s)]
       (* | FFLOOR(t,s) -> [ FTOI(t,s); ITOF(t,t) ] *)
       | _ -> [x] )
       @ extend y
@@ -77,9 +78,10 @@ let rec extend x =
 let lexbuf p =
   let p = Parser.exp Lexer.token p in
   p
-
+let opt p = 
+    RmSucJump.f p
 let encode p filename =
-  let p = p |> extend in
+  let p = p |> extend |> opt in
   let oc = open_out (filename ^ ".debug") in
   let counter = ref 0 in
   let _ =
@@ -132,7 +134,7 @@ let _ =
   in
   let p = List.concat (fst libs) in
   (* 暇なとき実装する *)
-  let p = LI (0,0)::LI(1,1000000)::LI(2,1000000)::(BL "main" ):: END :: p in
+  let p = LI (0,0)::LI(1,1)::LI(2,1000000)::(BL "main" ):: END :: p in
   let p = encode p filename in
   if arg "-txt" Sys.argv then
     let oname = filename ^ ".txt" in

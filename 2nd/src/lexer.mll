@@ -24,12 +24,12 @@ rule token = parse
 
 | "%sp"
 {
-    PERCENTINT(1)
+    PERCENTINT(2)
 
 }
 | "%fp"
 {
-    PERCENTINT(2)
+    PERCENTINT(1)
 }
 | "%lr" {
     PERCENTINT(31)
