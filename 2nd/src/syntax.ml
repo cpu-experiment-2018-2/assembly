@@ -11,7 +11,6 @@ type t =
   | FSUB of int * int * int
   | FMUL of int * int * int
   | FDIV of int * int * int
-
   | AND of int * int * int
   | OR of int * int * int
   | XOR of int * int * int
@@ -25,7 +24,7 @@ type t =
   | FLI of int * float
   | LIS of int * int
   | LIL of int * string
-  | LIW of int * int 
+  | LIW of int * int
   | STORE of int * int * int
   | LOAD of int * int * int
   | CMPDI of int * int

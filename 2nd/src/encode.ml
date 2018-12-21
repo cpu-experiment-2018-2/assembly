@@ -1,5 +1,7 @@
 open Syntax
+
 type order = S of t * t | L of t
+
 let get_pos_in = function
   | LL -> "000"
   | LH -> "001"
@@ -11,12 +13,12 @@ let get_pos_out = function
   | LH -> "101"
   | UL -> "110"
   | UH -> "111"
-let nop = 
-    "00000000000000000000000000000000"
-let to_64bit x = 
-    (* if String.length x = 32 then x ^ nop else x *)
-    if String.length x = 32 then x else x
 
+let nop = "00000000000000000000000000000000"
+
+let to_64bit x =
+  (* if String.length x = 32 then x ^ nop else x *)
+  if String.length x = 32 then x else x
 
 let opcode e =
   match e with
@@ -36,7 +38,6 @@ let opcode e =
   | ITOF _ -> "001101"
   | FSQRT _ -> "001110"
   | FFLOOR _ -> "001111"
-
   | LOAD _ -> "010000"
   | STORE _ -> "010001"
   | LI _ -> "010010"
@@ -86,47 +87,51 @@ let rec encode env e =
   | _ ->
       let op = opcode e in
       let t =
-          match e with
-          | LIW (x,s) -> 
-               (binary_encode 26
-                   (x lsl 21) 
-               ) ^ (binary_encode 32 
-                   s 
-               )
-          | _ -> (
-        binary_encode 26
-          ( match e with
-          | ADDI (t, s, d) | SUBI (t, s, d) -> (t lsl 21) lor (s lsl 16) lor (d land (0xffff))
-          | ADD (t, a, b)
-           |SUB (t, a, b)
-           |FADD (t, a, b)
-           |FSUB (t, a, b)
-           |FMUL (t, a, b)
-           |FDIV (t, a, b)
-           |AND (t, a, b)
-           |XOR (t, a, b)
-           |OR (t, a, b) ->
-              (t lsl 21) lor (a lsl 16) lor (b lsl 11)
-          | JUMP label | BEQ label | BLE label | BL label | BLT label | BNE label | BGT label | BGE label -> (
-            match List.find_opt (fun (x, y) -> label = x) env with
-            | Some (x, y) -> y
-            | None -> failwith label )
-          | LOAD (t, a, d) | STORE (t, a, d) | SLAWI (t, a, d) | SRAWI (t, a, d) ->
-              (t lsl 21) lor (a lsl 16) lor (d land (0xffff))
-          | LI (t, d) -> (t lsl 21) lor (d land (0xffff))
-          | ITOF (t,d) 
-          | FTOI (t,d)
-          | FFLOOR(t,d) 
-          | FSQRT (t,d) -> (t lsl 21) lor (d lsl 16)
-          | CMPDI (t, d) -> (t lsl 16) lor ( d land (0xffff))
-          | LIS (t, d) -> (t lsl 21) lor (d land (0xffff))
-          | CMPD (a, b) | CMPF (a, b) -> (a lsl 16) lor (b lsl 11)
-          | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
-          | Label _ -> failwith "label is unreachble"
-          | BLR _ -> 0
-          | END _ -> 0
-          | _ -> failwith (show e) )
-          )
+        match e with
+        | LIW (x, s) -> binary_encode 26 (x lsl 21) ^ binary_encode 32 s
+        | _ ->
+            binary_encode 26
+              ( match e with
+              | ADDI (t, s, d) | SUBI (t, s, d) ->
+                  (t lsl 21) lor (s lsl 16) lor (d land 0xffff)
+              | ADD (t, a, b)
+               |SUB (t, a, b)
+               |FADD (t, a, b)
+               |FSUB (t, a, b)
+               |FMUL (t, a, b)
+               |FDIV (t, a, b)
+               |AND (t, a, b)
+               |XOR (t, a, b)
+               |OR (t, a, b) ->
+                  (t lsl 21) lor (a lsl 16) lor (b lsl 11)
+              | JUMP label
+               |BEQ label
+               |BLE label
+               |BL label
+               |BLT label
+               |BNE label
+               |BGT label
+               |BGE label -> (
+                match List.find_opt (fun (x, y) -> label = x) env with
+                | Some (x, y) -> y
+                | None -> failwith label )
+              | LOAD (t, a, d)
+               |STORE (t, a, d)
+               |SLAWI (t, a, d)
+               |SRAWI (t, a, d) ->
+                  (t lsl 21) lor (a lsl 16) lor (d land 0xffff)
+              | LI (t, d) -> (t lsl 21) lor (d land 0xffff)
+              | ITOF (t, d) | FTOI (t, d) | FFLOOR (t, d) | FSQRT (t, d) ->
+                  (t lsl 21) lor (d lsl 16)
+              | CMPDI (t, d) -> (t lsl 16) lor (d land 0xffff)
+              | LIS (t, d) -> (t lsl 21) lor (d land 0xffff)
+              | CMPD (a, b) | CMPF (a, b) -> (a lsl 16) lor (b lsl 11)
+              | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
+              | Label _ -> failwith "label is unreachble"
+              | BLR _ -> 0
+              | END _ -> 0
+              | NOP _ -> 0
+              | _ -> failwith (show e) )
       in
       [to_64bit (op ^ t)]
 
@@ -138,5 +143,9 @@ let make_env (env, counter) expr =
 
 let f exp_list =
   let env, counter = List.fold_left make_env ([], 0) exp_list in
-  let _ = List.iter (fun (name,b) -> Printf.printf "%s %d\n" name b) env in
+  let oc = open_out "label_env.txt" in
+  let _ = Printf.fprintf oc "%d\n" (List.length env) in
+  let _ =
+    List.iter (fun (name, b) -> Printf.fprintf oc "%s %d\n" name b) env
+  in
   List.concat (List.map (encode env) exp_list)
