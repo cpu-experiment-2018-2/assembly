@@ -28,15 +28,17 @@ let rec h x =
       (x, z) :: h rest
   | _ -> []
 
-(* let (z,rest) = get_until_label x in ("init",z)::(h rest)  *)
+let safe = false
 
 let rec g (label, z) =
-  let left = Array.make (List.length z * 7) NOP in
-  let right = Array.make (List.length z * 7) NOP in
+  let left = Array.make (List.length z * 9) NOP in
+  let right = Array.make (List.length z * 9) NOP in
   let orders = Array.of_list z in
   let _ = Printf.printf "label %s nyaan %d" label (List.length z) in
   let can_time = Array.make 34 0 in
+  let used_time = Array.make 34 0 in
   let time = ref 0 in
+  let min_time = ref 0 in
   let dummy = 33 in
   let _ =
     for i = 0 to Array.length orders - 1 do
@@ -55,21 +57,25 @@ let rec g (label, z) =
         | LI (a, b) | LIW (a, b) -> (a, 0, 2, [])
         | FTOI (a, b) | ITOF (a, b) | FSQRT (a, b) | FFLOOR (a, b) ->
             (a, can_time.(b), 3, [b])
-        | STORE (a, b, c) -> (a, can_time.(b), 0, [b])
+        | STORE (a, b, c) -> (dummy, max can_time.(b) can_time.(a), 0, [a;b])
         | LOAD (a, b, c) -> (a, can_time.(b), 4, [b])
         | CMPDI (a, b) -> (dummy, can_time.(a), 0, [a])
         | CMPD (a, b) -> (dummy, max can_time.(a) can_time.(b), 0, [a; b])
         | CMPF (a, b) -> (dummy, max can_time.(a) can_time.(b), 0, [a; b])
         | BLRR a -> (dummy, !time, 0, [a])
-        | BL _ | BEQ _ | BLE _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | BLR _
+        | BL _ 
+        ->
+            (3, !time, 0, [])
+
+        | BEQ _ | BLE _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | BLR _
           ->
-            (dummy, !time, 0, [])
+            (dummy, !time, 1, [])
         | END -> (dummy, !time, 0, [])
-        | IN (a, _) -> (a, can_time.(a), 2, [a])
-        | OUT (a, _) -> (dummy, can_time.(a), 0, [a])
+        | IN (a, _) -> (a, !time, 2, [])
+        | OUT (a, _) -> (dummy, !time, 0, [a])
         | _ -> failwith (Syntax.show o)
       in
-      let start_time = max can_time.(gen) start_time in
+      let start_time = if safe then !time else max (!min_time) (max used_time.(gen) start_time) in
       let setted = ref false in
       let _ =
         Printf.printf "start search %s %d\n" (Syntax.show o) start_time
@@ -102,10 +108,17 @@ let rec g (label, z) =
             | _ -> ()
           in
           if !setted then (
-            can_time.(gen) <- start_time + latency + 1 ;
-            time := max !time (start_time + latency) ;
+            can_time.(gen) <- j + latency + 1 ;
+            if safe then time := !time + latency + 1  else time := max !time (j + latency + 1) ;
+            if is_br o then (
+                min_time := j + latency + 1;
+                for i = 0 to 33 do 
+                    can_time.(i) <- j + latency + 1;
+                    used_time.(i) <- j + latency + 1;
+                done
+            ) else ();
             List.iter
-              (fun x -> can_time.(x) <- max start_time can_time.(x))
+              (fun x -> used_time.(x) <- max j used_time.(x))
               ops )
           else ()
         else ()
