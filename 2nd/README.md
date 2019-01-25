@@ -8,19 +8,23 @@ assembly
 ```
 make
 ```
-でmain.nativeが出るはず
+でassembleが出るはず
 
 # usage
 ```
-./main.native test.st
+./assemble test.s
 ```
 でtest.s.ooにバイナリがはかれる.
 
+1st向けは
 ```
-./main.native test.st -txt
+./assemble test.s -32bit
 ```
-でtest.s.txtに文字列の２進数表記がでる
-
-* 文法はtest.sに書いてあるのがほとんど
-* mainラベルが存在する必要がある
-
+2nd向けにテキストを吐くには
+```
+./assemble test.s  -txt
+```
+2nd向けにバイナリを吐くには
+```
+./assemble test.s 
+```
