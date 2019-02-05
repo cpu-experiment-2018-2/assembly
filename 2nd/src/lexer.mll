@@ -14,7 +14,7 @@ rule token = parse
     Lexing.new_line lexbuf;  
     token lexbuf
     }
-| "#" |".text"| ".file"|".globl"|".type"|".type"|".p2align"|".section" | ".size"|".ident"{
+| "#" |".text"| ".file"|".globl"|".type"|".type"|".p2align"|".section" | ".size"|".ident" | ".hidden" {
     comment2 lexbuf;
     token lexbuf
 }
@@ -107,7 +107,7 @@ rule token = parse
 | "end"  {END}
 | "ble"  {BLE} | "jump"  {JUMP}
 | ":"  {COLON}
-| (upper|lower|'.'|"@@") (digit|lower|upper|'_'|'.')* 
+| (upper|lower|'.'|'_'|"@@") (digit|lower|upper|'_'|'.')* 
     { IDENT(Lexing.lexeme lexbuf) }
 | _ 
     { failwith
