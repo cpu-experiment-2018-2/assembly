@@ -3,8 +3,7 @@ open Syntax
 
 let is_br = function
   | BEQ _ | BLE _ | BL _ | BLRR _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _
-  | BLR _ | STORE _ ->
-  (* | BLR _ -> *)
+   |BLR _ ->
       true
   | _ -> false
 
@@ -30,55 +29,52 @@ let rec h x =
   | _ -> []
 
 let safe = true
+let get_info o = 
+     match o with
+        | ADDI (a, b, c) | SUBI (a, b, c) | SRAWI (a, b, c) | SLAWI (a, b, c)
+          ->
+            (Some a,  2, [b])
+        | FADD (a, b, c) | FSUB (a, b, c) | FMUL (a, b, c) ->
+            (Some a, 4, [b; c])
+        | FDIV (a, b, c) -> (Some a, 6, [b; c])
+        | ADD (a, b, c) | SUB (a, b, c) | AND (a, b, c) | XOR (a, b, c) ->
+            (Some a, 2, [b; c])
+        | LI (a, b) | LIW (a, b) -> (Some a, 2, [])
+        | FTOI (a, b) | ITOF (a, b) | FSQRT (a, b) | FFLOOR (a, b) ->
+            (Some a, 3, [b])
+        | STORE (a, b, c) -> (None, max can_time.(b) can_time.(a), 0, [a;b])
+        | LOAD (a, b, c) -> (Some a,  can_time.(a), 4, [b])
+        | CMPDI (a, b) -> (None, 0, [a])
+        | CMPD (a, b) -> (None,  0, [a; b])
+        | CMPF (a, b) -> (None,  0, [a; b])
+        | BLRR a -> (None, 2, [a])
+        | BL _ 
+        ->
+            (None, 0, [3])
+
+        | BEQ _ | BLE _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | BLR _
+          ->
+            (None, 1, [])
+        | END -> (None, 0, [])
+        | IN (a, _) -> (a, 2, [a])
+        | OUT (a, _) -> (dummy, 0, [a])
+        | _ -> failwith (Syntax.show o)
+
 
 let rec g (label, z) =
   let left = Array.make (List.length z * 9) NOP in
   let right = Array.make (List.length z * 9) NOP in
   let orders = Array.of_list z in
   let _ = Printf.printf "label %s nyaan %d" label (List.length z) in
-  let can_time = Array.make 34 0 in
-  let used_time = Array.make 34 0 in
+  let def_time = Array.make 34 0 in
+  let last_use_time = Array.make 34 0 in
   let time = ref 0 in
   let min_time = ref 0 in
   let dummy = 33 in
   let _ =
     for i = 0 to Array.length orders - 1 do
       let o = orders.(i) in
-      (* let _ = Printf.printf "%d %s \n" i (Syntax.show o) in *)
-      let gen, start_time, latency, ops =
-        match o with
-        | ADDI (a, b, c) | SUBI (a, b, c) | SRAWI (a, b, c) | SLAWI (a, b, c)
-          ->
-            (a, can_time.(b), 2, [b])
-        | FADD (a, b, c) | FSUB (a, b, c) | FMUL (a, b, c) ->
-            (a, max can_time.(b) can_time.(c), 4, [b; c])
-        | FDIV (a, b, c) -> (a, max can_time.(b) can_time.(c), 6, [b; c])
-        | ADD (a, b, c) | SUB (a, b, c) | AND (a, b, c) | XOR (a, b, c) ->
-            (a, max can_time.(b) can_time.(c), 2, [b; c])
-        | LI (a, b) | LIW (a, b) -> (a, 0, 2, [])
-        | FTOI (a, b) | ITOF (a, b) | FFLOOR (a, b) ->
-            (a, can_time.(b), 3, [b])
-        | FSQRT (a, b) ->
-            (a, can_time.(b), 4, [b])
-        | STORE (a, b, c) -> (dummy, max can_time.(b) can_time.(a), 0, [a;b])
-        | LOAD (a, b, c) -> (a, can_time.(b), 4, [b])
-        | CMPDI (a, b) -> (dummy, can_time.(a), 0, [a])
-        | CMPD (a, b) -> (dummy, max can_time.(a) can_time.(b), 0, [a; b])
-        | CMPF (a, b) -> (dummy, max can_time.(a) can_time.(b), 0, [a; b])
-        | BLRR a -> (dummy, !time, 0, [a])
-        | BL _ 
-        ->
-            (3, !time, 0, [])
-
-        | BEQ _ | BLE _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | BLR _
-          ->
-            (dummy, !time, 0, [])
-        | END -> (dummy, !time, 0, [])
-        | IN (a, _) -> (a, !time, 3, [])
-        | OUT (a, _) -> (dummy, !time, 0, [a])
-        | _ -> failwith (Syntax.show o)
-      in
-      let start_time = if safe then !time else max (!min_time) (max used_time.(gen) start_time) in
+      let start_time = if safe then !time else max (!min_time) (max can_time.(gen) start_time) in
       let setted = ref false in
       let _ =
         Printf.printf "start search %s %d\n" (Syntax.show o) start_time
@@ -106,30 +102,16 @@ let rec g (label, z) =
                 else ()
             | x, y, NOP
               when (not (is_br x)) && (not (is_br y)) && not (is_64bit x) ->
-                  if (match o with | LOAD _ | STORE _ -> true | _ -> false) then
-                      (
-                right.(j) <- left.(j);
-                left.(j) <- x ;
-                      )else (
                 right.(j) <- x ;
-                      );
-
                 setted := true
             | _ -> ()
           in
           if !setted then (
-            can_time.(gen) <- j + latency + 1 ;
-            (* if safe then time := !time + 8  else time := max !time (j + latency + 1) ; *)
-            if safe then time := j+ latency + 1  else time := max !time (j + latency + 1) ;
-            if is_br o then (
-                min_time := j + latency + 1;
-                for i = 0 to 33 do 
-                    can_time.(i) <- j + latency + 1;
-                    used_time.(i) <- j + latency + 1;
-                done
-            ) else ();
+            can_time.(gen) <- start_time + latency + 1 ;
+            if safe then time := !time + 1 else time := max !time (start_time + latency) ;
+            if is_br o then (min_time := start_time + 1) else ();
             List.iter
-              (fun x -> used_time.(x) <- max j used_time.(x))
+              (fun x -> can_time.(x) <- max start_time can_time.(x))
               ops )
           else ()
         else ()

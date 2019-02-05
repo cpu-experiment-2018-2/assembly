@@ -42,7 +42,9 @@ let libpath =
   | Some x -> x
   | None -> failwith "Set CPU_LIB_PATH to the path of assembly/lib"
 
-let libs = List.map (fun x -> libpath ^ x) ["lib.s"; "trigonometric_kernels.s"]
+ let libs = List.map (fun x -> libpath ^ x) ["lib.s"; "trigonometric_kernels.s"] 
+(* let libs = List.map (fun x -> libpath ^ x) [] *)
+
 
 let _ =
   is32bit := arg "-32bit" ;
@@ -71,8 +73,7 @@ let _ =
     Label "HOGE"
     :: LI (0, 0)
     :: LI (1, 1)
-    :: LI (2, 1000000)
+    :: LI (2, 250000)
     :: BL "main" :: END :: p
   in
-  (* let p = encode p filename in *)
   if !is32bit then Bit32.f p !istext filename else Bit64.f p !istext filename
