@@ -3,11 +3,12 @@ open Syntax
 
 let is_br = function
   | BEQ _ | BLE _ | BL _ | BLRR _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _
-  | BLR _ | STORE _ ->
-  (* | BLR _ -> *)
+  | BLR _  ->
       true
   | _ -> false
-
+let is_side_effect = function
+    | STORE _ | LOAD _ -> true
+    | _ -> false
 let is_uncond_br = function JUMP _ | BLR _ -> true | _ -> false
 
 let is_64bit = function LIW _ -> true | _ -> false
@@ -29,7 +30,7 @@ let rec h x =
       (x, z) :: h rest
   | _ -> []
 
-let safe = true
+let safe = false
 
 let rec g (label, z) =
   let left = Array.make (List.length z * 9) NOP in
@@ -120,13 +121,16 @@ let rec g (label, z) =
           if !setted then (
             can_time.(gen) <- j + latency + 1 ;
             (* if safe then time := !time + 8  else time := max !time (j + latency + 1) ; *)
-            if safe then time := j+ latency + 1  else time := max !time (j + latency + 1) ;
+            (* if safe then time := j+ latency + 1  else time := max !time (j + latency + 1) ; *)
+            if safe then time := j + latency + 1  else time := max !time (j + latency + 1) ;
             if is_br o then (
                 min_time := j + latency + 1;
                 for i = 0 to 33 do 
                     can_time.(i) <- j + latency + 1;
                     used_time.(i) <- j + latency + 1;
                 done
+            ) else if is_side_effect o then (
+                 min_time := j + latency + 1;
             ) else ();
             List.iter
               (fun x -> used_time.(x) <- max j used_time.(x))
