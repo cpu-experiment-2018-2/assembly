@@ -95,26 +95,25 @@ let rec g (label, z) =
             | x, NOP, NOP ->
                 left.(j) <- x ;
                 setted := true
-            | LOAD (a, b, c), LOAD (d, e, f), NOP ->
-                if b = e && c = f + 1 then (
-                  right.(j) <- o ;
-                  setted := true )
-                else ()
-            | STORE (a, b, c), STORE (d, e, f), NOP ->
-                if b = e && c = f + 1 then (
-                  right.(j) <- o ;
-                  setted := true )
-                else ()
+            (* | LOAD (a, b, c), LOAD (d, e, f), NOP -> *)
+            (*     if b = e && c = f + 1 then ( *)
+            (*       right.(j) <- o ; *)
+            (*       setted := true ) *)
+            (*     else () *)
+            (* | STORE (a, b, c), STORE (d, e, f), NOP -> *)
+            (*     if b = e && c = f + 1 then ( *)
+            (*       right.(j) <- o ; *)
+            (*       setted := true ) *)
+            (*     else () *)
             | x, y, NOP
               when (not (is_br x)) && (not (is_br y)) && not (is_64bit x) ->
-                  if (match o with | LOAD _ | STORE _ -> true | _ -> false) then
-                      (
-                right.(j) <- left.(j);
-                left.(j) <- x ;
-                      )else (
+                (*   if (match o with | LOAD _ | STORE _ -> true | _ -> false) then *)
+                (*       ( *)
+                (* right.(j) <- left.(j); *)
+                (* left.(j) <- x ; *)
+                (*       )else ( *)
                 right.(j) <- x ;
-                      );
-
+                      (* ); *)
                 setted := true
             | _ -> ()
           in
@@ -130,7 +129,7 @@ let rec g (label, z) =
                     used_time.(i) <- j + latency + 1;
                 done
             ) else if is_side_effect o then (
-                 min_time := j + latency + 1;
+                 min_time := j ;
             ) else ();
             List.iter
               (fun x -> used_time.(x) <- max j used_time.(x))
