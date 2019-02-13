@@ -77,7 +77,12 @@ order:
         if String.length t < 2 then Label(t) else 
         (
             let t = String.sub t 0 2 in
-            if t = "@@" then LocalLabel($1) else Label($1)
+            if t = "@@" then LocalLabel($1) else 
+                (
+            let t = String.sub t 0 1 in
+            if t = "." then 
+                LocalLabel($1) else
+            Label($1))
         )
         }
     | ADDI reg COMMA reg COMMA INT { if $6 >= 0 then ADDI($2,$4,$6) else  SUBI($2,$4,-$6)}
