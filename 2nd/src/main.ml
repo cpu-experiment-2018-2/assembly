@@ -61,19 +61,20 @@ let _ =
         read_file x )
       libs
   in
-  let libs =
+  let libs = 
     List.fold_left
       (fun (acc, counter) p ->
         (change (string_of_int counter) p :: acc, counter + 1) )
       ([], 0)
-      (libs @ [main])
-  in
+      (libs @ [main]) in
   let p = List.concat (fst libs) in
   let p =
     Label "HOGE"
     :: LI (0, 0)
     :: LI (1, 1)
     :: LI (2, 250000)
+    :: LI (3,2)
+    :: STORE(3, 0, 1)
     :: BL "main" :: END :: p
   in
   if !is32bit then Bit32.f p !istext filename else Bit64.f p !istext filename

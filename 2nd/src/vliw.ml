@@ -1,11 +1,14 @@
 (* ラベルごとに分ける *)
 open Syntax
-
 let is_br = function
   | BEQ _ | BLE _ | BL _ | BLRR _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _
   | BLR _  ->
       true
   | _ -> false
+
+let is_out_in = function
+    | OUT _ | IN _ -> true
+    | _ -> false
 let is_side_effect = function
     | STORE _ | LOAD _ -> true
     | _ -> false
@@ -95,6 +98,8 @@ let rec g (label, z) =
             | x, NOP, NOP ->
                 left.(j) <- x ;
                 setted := true
+            | x, OUT _, NOP -> ()
+            | x, IN _, NOP -> ()
             (* | LOAD (a, b, c), LOAD (d, e, f), NOP -> *)
             (*     if b = e && c = f + 1 then ( *)
             (*       right.(j) <- o ; *)
@@ -106,7 +111,7 @@ let rec g (label, z) =
             (*       setted := true ) *)
             (*     else () *)
             | x, y, NOP
-              when (not (is_br x)) && (not (is_br y)) && not (is_64bit x) ->
+              when (not (is_br x)) && (not (is_br y)) && not (is_64bit x) && not (is_out_in x)->
                 (*   if (match o with | LOAD _ | STORE _ -> true | _ -> false) then *)
                 (*       ( *)
                 (* right.(j) <- left.(j); *)
@@ -161,7 +166,7 @@ let rec g (label, z) =
   order
 
 let rec f x =
-  let y = h x in
+  let y = Eliminate_dead_code.f x in
   let y =
     List.map
       (fun (y, x) ->

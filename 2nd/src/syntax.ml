@@ -59,9 +59,10 @@ let apply f s =
   | _ -> s
 
 let change prefix e =
-  let rec f t = match t with LocalLabel x -> [x] | _ -> [] in
-  let globals = List.concat (List.map f e) in
-  let change x =
-    if not (List.exists (fun y -> y = x) globals) then x else prefix ^ x
-  in
-  List.map (apply change) e
+  (* let rec f t = match t with LocalLabel x -> [x] | _ -> [] in *)
+  (* let globals = List.concat (List.map f e) in *)
+  (* let change x = *)
+  (*   if not (List.exists (fun y -> y = x) globals) then x else prefix ^ x *)
+  (* in *)
+  e
+  (* List.map (apply change) e *)
