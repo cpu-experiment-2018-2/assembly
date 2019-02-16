@@ -1,16 +1,19 @@
 (* ラベルごとに分ける *)
 open Syntax
 let is_br = function
-  | BEQ _ | BLE _ | BL _ | BLRR _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _
+  | BEQ _ | BLE _ | BL _ | BLRR _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | FORK _ | FORKI _ | JOIN _
   | BLR _  ->
       true
   | _ -> false
 
+let is_fetch = function
+    | FETCH _ -> true
+    | _ -> false
 let is_out_in = function
     | OUT _ | IN _ -> true
     | _ -> false
 let is_side_effect = function
-    | STORE _ | LOAD _ -> true
+    | STORE _ | LOAD _ | FETCH _ -> true
     | _ -> false
 let is_uncond_br = function JUMP _ | BLR _ -> true | _ -> false
 
@@ -39,7 +42,7 @@ let rec g (label, z) =
   let left = Array.make (List.length z * 9) NOP in
   let right = Array.make (List.length z * 9) NOP in
   let orders = Array.of_list z in
-  let _ = Printf.printf "label %s nyaan %d" label (List.length z) in
+  (* let _ = Printf.printf "label %s nyaan %d" label (List.length z) in *)
   let can_time = Array.make 34 0 in
   let used_time = Array.make 34 0 in
   let time = ref 0 in
@@ -65,7 +68,7 @@ let rec g (label, z) =
         | FSQRT (a, b) ->
             (a, can_time.(b), 4, [b])
         | STORE (a, b, c) -> (dummy, max can_time.(b) can_time.(a), 0, [a;b])
-        | LOAD (a, b, c) -> (a, can_time.(b), 4, [b])
+        | LOAD (a, b, c) | FETCH(a,b,c) -> (a, can_time.(b), 4, [b])
         | CMPDI (a, b) -> (dummy, can_time.(a), 0, [a])
         | CMPD (a, b) -> (dummy, max can_time.(a) can_time.(b), 0, [a; b])
         | CMPF (a, b) -> (dummy, max can_time.(a) can_time.(b), 0, [a; b])
@@ -74,7 +77,7 @@ let rec g (label, z) =
         ->
             (3, !time, 0, [])
 
-        | BEQ _ | BLE _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | BLR _
+        | BEQ _ | BLE _ | BLT _ | BNE _ | BGE _ | BGT _ | JUMP _ | BLR _ | JOIN _ | FORK _ | FORKI _
           ->
             (dummy, !time, 0, [])
         | END -> (dummy, !time, 0, [])
@@ -84,9 +87,9 @@ let rec g (label, z) =
       in
       let start_time = if safe then !time else max (!min_time) (max used_time.(gen) start_time) in
       let setted = ref false in
-      let _ =
-        Printf.printf "start search %s %d\n" (Syntax.show o) start_time
-      in
+      (* let _ = *)
+      (*   Printf.printf "start search %s %d\n" (Syntax.show o) start_time *)
+      (* in *)
       for j = start_time to start_time + 20 do
         if not !setted then
           let _ =
@@ -100,6 +103,7 @@ let rec g (label, z) =
                 setted := true
             | x, OUT _, NOP -> ()
             | x, IN _, NOP -> ()
+            | x, FETCH(_) , NOP -> ()
             (* | LOAD (a, b, c), LOAD (d, e, f), NOP -> *)
             (*     if b = e && c = f + 1 then ( *)
             (*       right.(j) <- o ; *)
@@ -111,7 +115,7 @@ let rec g (label, z) =
             (*       setted := true ) *)
             (*     else () *)
             | x, y, NOP
-              when (not (is_br x)) && (not (is_br y)) && not (is_64bit x) && not (is_out_in x)->
+              when (not (is_br x)) && (not (is_br y)) && not (is_64bit x) && not (is_out_in x) && not (is_fetch x)->
                 (*   if (match o with | LOAD _ | STORE _ -> true | _ -> false) then *)
                 (*       ( *)
                 (* right.(j) <- left.(j); *)
@@ -158,9 +162,10 @@ let rec g (label, z) =
   let _ =
     for i = 0 to !last do
       let _ = order.(i) <- (left.(i), right.(i)) in
-      Printf.printf "%d %s %s\n" i
-        (Syntax.show left.(i))
-        (Syntax.show right.(i))
+      ()
+      (* Printf.printf "%d %s %s\n" i *)
+      (*   (Syntax.show left.(i)) *)
+      (*   (Syntax.show right.(i)) *)
     done
   in
   order

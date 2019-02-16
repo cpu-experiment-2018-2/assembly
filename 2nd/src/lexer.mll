@@ -87,8 +87,10 @@ rule token = parse
 | "bne"  {BNE}
 | "bgt"  {BGT}
 | "bge"  {BGE}
-
-
+| "forki"  {FORKI}
+| "fork"  {FORK}
+| "join"  {JOIN}
+| "fetch"  {FETCH}
 | "blrr"  {BLRR}
 | "blr"  {BLR}
 | "mr"  {MR}

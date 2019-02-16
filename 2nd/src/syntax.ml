@@ -44,6 +44,10 @@ type t =
   | BLRR of int
   | NOP
   | END
+  | FORK of int * string
+  | FORKI of int * int
+  | JOIN of int
+  | FETCH of int  * int * int
 [@@deriving show]
 
 let apply f s =

@@ -35,6 +35,10 @@ exception ParseError
 %token LIS
 %token LIW
 %token FLI
+%token FORK
+%token FORKI
+%token JOIN
+%token FETCH
 %token STORE
 %token LOAD
 %token ITOF
@@ -115,12 +119,10 @@ order:
     | FTOI reg COMMA reg { FTOI($2,$4)}
     | BEQ IDENT { BEQ($2)}
     | BNE IDENT { BNE($2)}
-
     | BLE IDENT { BLE($2)}
     | BLT IDENT { BLT($2)}
     | BGE IDENT { BGE($2)}
     | BGT IDENT { BGT($2)}
-
     | BL IDENT { BL($2)}
     | JUMP IDENT {JUMP($2)}
     | BLRR reg { BLRR($2)}
@@ -137,6 +139,9 @@ order:
     | OUTUH reg { OUT($2,UH)}
     | SLAWI reg COMMA reg COMMA INT  { SLAWI($2,$4,$6)}
     | SRAWI reg COMMA reg COMMA INT { SRAWI($2,$4,$6)}
+    | FETCH reg COMMA reg COMMA reg { FETCH($2, $4, $6)}
+    | FORKI reg COMMA INT {FORKI($2, $4)}
+    | JOIN reg {JOIN($2)}
     | error 
     {
     let lex = (Parsing.symbol_end_pos ()).Lexing.pos_lnum in

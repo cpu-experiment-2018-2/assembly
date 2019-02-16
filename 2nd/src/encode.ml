@@ -63,6 +63,11 @@ let opcode e =
   | OUT (_, x) -> "101" ^ get_pos_out x
   | NOP -> "111000"
   | END -> "111001"
+  | FORK _ 
+  | FORKI _ -> "111010"
+  | JOIN _ -> "111011"
+  | FETCH _ -> "111100"
+
   | _ -> failwith (Syntax.show e)
 
 let binary_encode keta number =
@@ -102,6 +107,7 @@ let rec encode env e =
                |FDIV (t, a, b)
                |AND (t, a, b)
                |XOR (t, a, b)
+               |FETCH (t, a, b) 
                |OR (t, a, b) ->
                   (t lsl 21) lor (a lsl 16) lor (b lsl 11)
               | JUMP label
@@ -123,7 +129,8 @@ let rec encode env e =
               | LI (t, d) -> (t lsl 21) lor (d land 0xffff)
               | ITOF (t, d) | FTOI (t, d) | FFLOOR (t, d) | FSQRT (t, d) ->
                   (t lsl 21) lor (d lsl 16)
-              | CMPDI (t, d) -> (t lsl 16) lor (d land 0xffff)
+              | CMPDI (t, d)
+              | FORKI (t, d) -> (t lsl 16) lor (d land 0xffff)
               | LIS (t, d) -> (t lsl 21) lor (d land 0xffff)
               | CMPD (a, b) | CMPF (a, b) -> (a lsl 16) lor (b lsl 11)
               | BLRR a | IN (a, _) | OUT (a, _) -> a lsl 21
@@ -131,6 +138,7 @@ let rec encode env e =
               | BLR _ -> 0
               | END _ -> 0
               | NOP _ -> 0
+              | JOIN a -> a lsl 16
               | _ -> failwith (show e) )
       in
       [to_64bit (op ^ t)]

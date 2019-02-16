@@ -72,9 +72,7 @@ let _ =
     Label "HOGE"
     :: LI (0, 0)
     :: LI (1, 1)
-    :: LI (2, 250000)
-    :: LI (3,2)
-    :: STORE(3, 0, 1)
+    :: LI (2, 123800)
     :: BL "main" :: END :: p
   in
   if !is32bit then Bit32.f p !istext filename else Bit64.f p !istext filename

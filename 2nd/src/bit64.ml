@@ -42,13 +42,13 @@ let make_env p = List.fold_left make_env' ([], 0) p
 
 let encode' env (label, ar) =
   let lis = Array.to_list ar in
-  let _ = Printf.printf "neko %s:\n" label in
+  (* let _ = Printf.printf "neko %s:\n" label in *)
   let lis =
     List.map
       (fun (x, y) ->
         let [x] = Encode.encode env x in
         let [y] = Encode.encode env y in
-        let _ = Printf.printf "neko %s %s\n" x y in
+        (* let _ = Printf.printf "neko %s %s\n" x y in *)
         if String.length x = 32 then x ^ y else x )
       lis
   in

@@ -24,6 +24,19 @@ alloc:
     addi %r3,%r18,0
     blr
 
+joinf:
+    join %r3
+    blr
+
+fetchf:
+    fetch %r3, %r3, %r4
+    blr
+
+forkf:
+    forki %r3, 0
+    blr
+    
+
 create_array_sub:
 	store %sp ,%sp,-2 
 	addi %sp ,%sp, -2 
