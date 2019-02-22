@@ -33,7 +33,7 @@ fetchf:
     blr
 
 forkf:
-    forki %r3, 0
+    fork %r3, 0
     blr
     
 
