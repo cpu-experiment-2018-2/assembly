@@ -1,7 +1,8 @@
 open Syntax
 
 external getint : float -> int = "getint"
-
+let temporary_reg1 = 30
+let temporary_reg2 = 29
 let to_bin p =
   let conv x =
     let t63_56 = "0b" ^ String.sub x 0 8 in
@@ -29,6 +30,10 @@ let rec extend x =
           else [LI (var, x)]
       | FLI (x, f) -> extend [LI (x, getint f)]
       | LIW (x, f) -> extend [LI (x, f)]
+      | FADDMUL2(a,b,c,d,e) -> [FMUL(temporary_reg1,b,c);FMUL(temporary_reg2, d,e);FADD(a, temporary_reg1, temporary_reg2)]
+      | FADDMUL3(a,b,c,d,e,f,g) -> [FMUL(temporary_reg1,b,c);FMUL(temporary_reg2, d,e);FMUL(a, f, g);FADD(temporary_reg1, temporary_reg1, temporary_reg2);FADD(a, temporary_reg1, a)]
+      | FADDSQUARE(a,b,c,d,e,f,g) -> [FMUL(temporary_reg1,b,c);FMUL(temporary_reg2, d,e);FMUL(a, f, g);FADD(temporary_reg1, temporary_reg1, b);FADD(temporary_reg2, temporary_reg2, d); FMUL(a, a, f); FADD(temporary_reg1, temporary_reg1 , temporary_reg2); FADD(a,temporary_reg1, a)]
+
       | _ -> [x] )
       @ extend y
 

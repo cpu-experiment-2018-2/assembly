@@ -1,11 +1,7 @@
 external getint : float -> int = "getint"
 
 open Syntax
-
-let is32bit = ref false
-
-let istext = ref true
-
+open Global
 let arg name = Array.exists (fun x -> x = name) Sys.argv
 
 let _ =
@@ -13,7 +9,7 @@ let _ =
     "usage: ./main.native filename [-option]\n\
      \t-txt : convert to binary string outputed to filename.txt \n\
      \totherwise : convert to binary outputed to filename.oo\n"
-
+let temporary_reg = 30
 let rec extend x =
   match x with
   | [] -> []
@@ -48,7 +44,9 @@ let libpath =
 
 let _ =
   is32bit := arg "-32bit" ;
-  istext := arg "-txt"
+  istext := arg "-txt";
+  isnottrim := arg "-isnotrim";
+  issafe := arg "-safe"
 
 let _ =
   let filename = Sys.argv.(1) in
@@ -72,7 +70,7 @@ let _ =
     Label "HOGE"
     :: LI (0, 0)
     :: LI (1, 1)
-    :: LI (2, 123800)
+    :: LI (2, 110000)
     :: BL "main" :: END :: p
   in
   if !is32bit then Bit32.f p !istext filename else Bit64.f p !istext filename

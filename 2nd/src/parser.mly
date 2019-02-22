@@ -22,6 +22,9 @@ exception ParseError
 %token SLAWI
 %token SRAWI
 %token FADD
+%token FADDMUL2
+%token FADDMUL3
+%token FADDSQUARE
 %token FSUB
 %token FMUL
 %token FDIV
@@ -122,6 +125,9 @@ order:
     | BLE IDENT { BLE($2)}
     | BLT IDENT { BLT($2)}
     | BGE IDENT { BGE($2)}
+    | FADDSQUARE reg COMMA reg COMMA reg COMMA reg COMMA reg COMMA reg COMMA reg  { FADDSQUARE($2, $4, $6, $8, $10, $12, $14)}
+    | FADDMUL3 reg COMMA reg COMMA reg COMMA reg COMMA reg COMMA reg COMMA reg  { FADDMUL3($2, $4, $6, $8, $10, $12, $14)}
+    | FADDMUL2 reg COMMA reg COMMA reg COMMA reg COMMA reg  { FADDMUL2($2, $4, $6, $8, $10 )}
     | BGT IDENT { BGT($2)}
     | BL IDENT { BL($2)}
     | JUMP IDENT {JUMP($2)}

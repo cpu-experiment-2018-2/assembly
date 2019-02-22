@@ -36,7 +36,6 @@ let rec h x =
       (x, z) :: h rest
   | _ -> []
 
-let safe = false
 
 let rec g (label, z) =
   let left = Array.make (List.length z * 9) NOP in
@@ -85,7 +84,7 @@ let rec g (label, z) =
         | OUT (a, _) -> (dummy, !time, 0, [a])
         | _ -> failwith (Syntax.show o)
       in
-      let start_time = if safe then !time else max (!min_time) (max used_time.(gen) start_time) in
+      let start_time = if !Global.issafe then !time else max (!min_time) (max used_time.(gen) start_time) in
       let setted = ref false in
       (* let _ = *)
       (*   Printf.printf "start search %s %d\n" (Syntax.show o) start_time *)
@@ -128,9 +127,9 @@ let rec g (label, z) =
           in
           if !setted then (
             can_time.(gen) <- j + latency + 1 ;
-            (* if safe then time := !time + 8  else time := max !time (j + latency + 1) ; *)
+            if !Global.issafe then time := !time + 1  else time := max !time (j + latency + 1) ; 
             (* if safe then time := j+ latency + 1  else time := max !time (j + latency + 1) ; *)
-            if safe then time := j + latency + 1  else time := max !time (j + latency + 1) ;
+            (* if safe then time := j + latency + 1  else time := max !time (j + latency + 1) ; *)
             if is_br o then (
                 min_time := j + latency + 1;
                 for i = 0 to 33 do 

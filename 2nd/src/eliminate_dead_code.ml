@@ -67,6 +67,6 @@ let rec f x =
     in 
     let _ = g "HOGE" in
     let x = h x in
-    let y = List.filter (fun (a,b) -> Hashtbl.mem use a) x in
-    y
+    let x = if !Global.isnottrim then x else List.filter (fun (a,b) -> Hashtbl.mem use a) x in
+    x
     

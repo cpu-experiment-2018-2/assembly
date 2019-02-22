@@ -58,6 +58,9 @@ rule token = parse
 | "subi"  {SUBI}
 | "sub"  {SUB}
 | "nop" {NOP}
+| "faddmul2"  {FADDMUL2}
+| "faddmul3"  {FADDMUL3}
+| "faddsquare"  {FADDSQUARE}
 | "fadd"  {FADD}
 | "fsub"  {FSUB}
 | "fmul"  {FMUL}

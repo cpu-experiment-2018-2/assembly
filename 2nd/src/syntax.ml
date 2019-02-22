@@ -8,6 +8,9 @@ type t =
   | ADD of int * int * int
   | SUB of int * int * int
   | FADD of int * int * int
+  | FADDMUL2 of int * int * int * int * int
+  | FADDMUL3 of int * int * int * int * int * int * int
+  | FADDSQUARE of int * int * int * int * int * int * int
   | FSUB of int * int * int
   | FMUL of int * int * int
   | FDIV of int * int * int
