@@ -146,7 +146,7 @@ order:
     | SLAWI reg COMMA reg COMMA INT  { SLAWI($2,$4,$6)}
     | SRAWI reg COMMA reg COMMA INT { SRAWI($2,$4,$6)}
     | FETCH reg COMMA reg COMMA reg { FETCH($2, $4, $6)}
-    | FORKI reg COMMA INT {FORKI($2, $4)}
+    | FORK reg COMMA INT {FORKI($2, $4)}
     | JOIN reg {JOIN($2)}
     | error 
     {
